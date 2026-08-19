@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday!</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Canvas (Stars & Particles) -->
+    <canvas id="bg-canvas"></canvas>
+    <canvas id="fireworks-canvas"></canvas>
+
+    <!-- Music Control -->
+    <button id="music-btn" class="glass-btn">🎵</button>
+    <audio id="bg-music" loop>
+        <source src="" type="audio/mpeg">
+    </audio>
+
+    <!-- MAIN CONTAINER -->
+    <main id="app">
+        
+        <!-- SCENE 1: INTRO -->
+        <section id="scene-intro" class="scene active flex-center">
+            <div class="content-wrapper glass-panel fade-in">
+                <h1 id="intro-text" class="cinzel-font text-glow"></h1>
+                <button id="start-btn" class="primary-btn mt-4 pulse">START THE JOURNEY ✨</button>
+            </div>
+        </section>
+
+        <!-- SCENE 2: TIMELINE -->
+        <section id="scene-timeline" class="scene">
+            <h2 class="section-title cinzel-font">Our Memories</h2>
+            <div class="timeline-container" id="timeline-container">
+                <!-- Sẽ được render bằng JS -->
+            </div>
+            <div class="flex-center mt-4 pb-4">
+                <button id="to-quiz-btn" class="primary-btn">TIẾP TỤC ➡️</button>
+            </div>
+        </section>
+
+        <!-- SCENE 3: QUIZ -->
+        <section id="scene-quiz" class="scene flex-center">
+            <div class="quiz-container glass-panel">
+                <p id="quiz-intro" class="mb-4 text-center"></p>
+                <div id="quiz-content">
+                    <h3 id="quiz-question" class="cinzel-font mb-4"></h3>
+                    <div id="quiz-options" class="options-grid"></div>
+                </div>
+                <div id="quiz-success" class="hidden text-center">
+                    <h3 class="cinzel-font text-glow">Yep! You still remember 💜</h3>
+                    <button id="to-gift-btn" class="primary-btn mt-4">NHẬN QUÀ 🎁</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCENE 4: GIFT BOX -->
+        <section id="scene-gift" class="scene flex-center">
+            <div class="gift-wrapper">
+                <p id="gift-text" class="cinzel-font mb-4 text-glow text-center"></p>
+                
+                <!-- 3D CSS Gift Box -->
+                <div class="gift-box" id="gift-box">
+                    <div class="box-body">
+                        <div class="box-front side"></div>
+                        <div class="box-back side"></div>
+                        <div class="box-left side"></div>
+                        <div class="box-right side"></div>
+                        <div class="box-bottom side"></div>
+                    </div>
+                    <div class="box-lid" id="box-lid">
+                        <div class="lid-top side"></div>
+                        <div class="lid-front side"></div>
+                        <div class="lid-back side"></div>
+                        <div class="lid-left side"></div>
+                        <div class="lid-right side"></div>
+                        <div class="ribbon-vertical"></div>
+                        <div class="ribbon-horizontal"></div>
+                        <div class="bow"></div>
+                    </div>
+                </div>
+
+                <button id="open-gift-btn" class="primary-btn mt-4">MỞ QUÀ</button>
+            </div>
+        </section>
+
+        <!-- SCENE 5: BIRTHDAY MESSAGE -->
+        <section id="scene-message" class="scene flex-center">
+            <div class="glass-panel text-center">
+                <h1 id="bday-title" class="cinzel-font text-glow mb-4">HAPPY BIRTHDAY, <span id="bday-name"></span> 💜</h1>
+                <div id="typewriter-text" class="message-text"></div>
+            </div>
+        </section>
+
+        <!-- SCENE 6: FIREWORKS -->
+        <!-- Fireworks được vẽ trên #fireworks-canvas ở global -->
+        <section id="scene-fireworks" class="scene flex-center pointer-events-none">
+            <h1 class="cinzel-font super-glow fireworks-text fade-in">HAPPY BIRTHDAY 🎉</h1>
+            <button id="to-wall-btn" class="primary-btn mt-4 pointer-events-auto z-10" style="position:absolute; bottom: 20%;">ONE MORE SURPRISE ✨</button>
+        </section>
+
+        <!-- SCENE 7: MEMORY WALL -->
+        <section id="scene-wall" class="scene">
+            <div class="wall-container">
+                <h2 id="final-wall-text" class="cinzel-font text-center text-glow mb-4 mt-4"></h2>
+                <div id="masonry-grid" class="masonry-grid">
+                    <!-- Render by JS -->
+                </div>
+                <div class="flex-center mt-4 pb-4">
+                    <button id="replay-btn" class="primary-btn">PLAY AGAIN 🔄</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
