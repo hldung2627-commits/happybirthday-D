@@ -91,7 +91,15 @@ body[data-scene="scene-fireworks"] .text-gradient {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
     z-index: -1; pointer-events: none;
 }
-#fireworks-canvas { z-index: 5; pointer-events: auto; /* To catch clicks */ cursor: crosshair; }
+#fireworks-canvas { 
+    z-index: 5; 
+    pointer-events: none; 
+    cursor: default; 
+}
+body[data-scene="scene-fireworks"] #fireworks-canvas { 
+    pointer-events: auto; 
+    cursor: crosshair; 
+}
 #sparkles-container { z-index: 0; }
 
 .sparkle {
