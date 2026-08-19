@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday!</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Happy Birthday! 🎈</title>
+    <!-- Mới: Font Fredoka (Vui tươi, heading) & Quicksand (Mềm mại, body) -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <!-- Background Canvas (Stars & Particles) -->
+<body data-scene="scene-intro">
+    
+    <!-- Background Gradient Blobs -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Sparkle System Container -->
+    <div id="sparkles-container"></div>
+
+    <!-- Canvas -->
     <canvas id="bg-canvas"></canvas>
     <canvas id="fireworks-canvas"></canvas>
 
@@ -24,34 +35,34 @@
         
         <!-- SCENE 1: INTRO -->
         <section id="scene-intro" class="scene active flex-center">
-            <div class="content-wrapper glass-panel fade-in">
-                <h1 id="intro-text" class="cinzel-font text-glow"></h1>
-                <button id="start-btn" class="primary-btn mt-4 pulse">START THE JOURNEY ✨</button>
+            <div class="content-wrapper glass-panel fade-in text-center">
+                <h1 id="intro-text" class="heading-font text-gradient mb-4"></h1>
+                <button id="start-btn" class="primary-btn mt-4 bounce-hover">START THE JOURNEY ✨</button>
             </div>
         </section>
 
         <!-- SCENE 2: TIMELINE -->
         <section id="scene-timeline" class="scene">
-            <h2 class="section-title cinzel-font">Our Memories</h2>
+            <h2 class="section-title heading-font text-gradient">Our Magical Memories</h2>
             <div class="timeline-container" id="timeline-container">
                 <!-- Sẽ được render bằng JS -->
             </div>
             <div class="flex-center mt-4 pb-4">
-                <button id="to-quiz-btn" class="primary-btn">TIẾP TỤC ➡️</button>
+                <button id="to-quiz-btn" class="primary-btn bounce-hover">TIẾP TỤC 💫</button>
             </div>
         </section>
 
         <!-- SCENE 3: QUIZ -->
         <section id="scene-quiz" class="scene flex-center">
             <div class="quiz-container glass-panel">
-                <p id="quiz-intro" class="mb-4 text-center"></p>
+                <p id="quiz-intro" class="mb-4 text-center bold-text"></p>
                 <div id="quiz-content">
-                    <h3 id="quiz-question" class="cinzel-font mb-4"></h3>
+                    <h3 id="quiz-question" class="heading-font text-gradient mb-4"></h3>
                     <div id="quiz-options" class="options-grid"></div>
                 </div>
                 <div id="quiz-success" class="hidden text-center">
-                    <h3 class="cinzel-font text-glow">Yep! You still remember 💜</h3>
-                    <button id="to-gift-btn" class="primary-btn mt-4">NHẬN QUÀ 🎁</button>
+                    <h3 class="heading-font text-gradient glow-intense">Tuyệt vời! Cậu vẫn nhớ 💜</h3>
+                    <button id="to-gift-btn" class="primary-btn mt-4 bounce-hover">NHẬN QUÀ 🎁</button>
                 </div>
             </div>
         </section>
@@ -59,9 +70,9 @@
         <!-- SCENE 4: GIFT BOX -->
         <section id="scene-gift" class="scene flex-center">
             <div class="gift-wrapper">
-                <p id="gift-text" class="cinzel-font mb-4 text-glow text-center"></p>
+                <p id="gift-text" class="heading-font mb-4 text-gradient glow-intense text-center"></p>
                 
-                <!-- 3D CSS Gift Box -->
+                <!-- 3D CSS Gift Box (Bright Version) -->
                 <div class="gift-box" id="gift-box">
                     <div class="box-body">
                         <div class="box-front side"></div>
@@ -82,34 +93,32 @@
                     </div>
                 </div>
 
-                <button id="open-gift-btn" class="primary-btn mt-4">MỞ QUÀ</button>
+                <button id="open-gift-btn" class="primary-btn mt-4 bounce-hover">OPEN IT ✨</button>
             </div>
         </section>
 
         <!-- SCENE 5: BIRTHDAY MESSAGE -->
         <section id="scene-message" class="scene flex-center">
             <div class="glass-panel text-center">
-                <h1 id="bday-title" class="cinzel-font text-glow mb-4">HAPPY BIRTHDAY, <span id="bday-name"></span> 💜</h1>
+                <h1 id="bday-title" class="heading-font text-gradient glow-intense mb-4">HAPPY BIRTHDAY,<br><span id="bday-name"></span> 🎂</h1>
                 <div id="typewriter-text" class="message-text"></div>
             </div>
         </section>
 
         <!-- SCENE 6: FIREWORKS -->
-        <!-- Fireworks được vẽ trên #fireworks-canvas ở global -->
         <section id="scene-fireworks" class="scene flex-center pointer-events-none">
-            <h1 class="cinzel-font super-glow fireworks-text fade-in">HAPPY BIRTHDAY 🎉</h1>
-            <button id="to-wall-btn" class="primary-btn mt-4 pointer-events-auto z-10" style="position:absolute; bottom: 20%;">ONE MORE SURPRISE ✨</button>
+            <!-- Canvas is behind, but captures clicks because scene is pointer-events-none, EXCEPT the button -->
+            <h1 class="heading-font super-glow text-gradient text-center fade-in scale-in" style="z-index: 10;">HAPPY BIRTHDAY 🎉</h1>
+            <button id="to-wall-btn" class="primary-btn mt-4 pointer-events-auto bounce-hover" style="position:absolute; bottom: 15%; z-index: 20;">ONE MORE SURPRISE 🎀</button>
         </section>
 
         <!-- SCENE 7: MEMORY WALL -->
         <section id="scene-wall" class="scene">
             <div class="wall-container">
-                <h2 id="final-wall-text" class="cinzel-font text-center text-glow mb-4 mt-4"></h2>
-                <div id="masonry-grid" class="masonry-grid">
-                    <!-- Render by JS -->
-                </div>
+                <h2 id="final-wall-text" class="heading-font text-center text-gradient glow-intense mb-4 mt-4"></h2>
+                <div id="masonry-grid" class="masonry-grid"></div>
                 <div class="flex-center mt-4 pb-4">
-                    <button id="replay-btn" class="primary-btn">PLAY AGAIN 🔄</button>
+                    <button id="replay-btn" class="primary-btn bounce-hover">PLAY AGAIN 🔄</button>
                 </div>
             </div>
         </section>
