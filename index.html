@@ -6,7 +6,21 @@
     <title>Happy Birthday! 🎈</title>
     <!-- Mới: Font Fredoka (Vui tươi, heading) & Quicksand (Mềm mại, body) -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
+
+<style>
+    /* Ép buộc sửa lỗi chặn click và con trỏ chuột (+) */
+    #fireworks-canvas {
+        pointer-events: none !important;
+        cursor: default !important;
+        z-index: 1 !important;
+    }
+    body[data-scene="scene-fireworks"] #fireworks-canvas {
+        pointer-events: auto !important;
+        cursor: crosshair !important;
+        z-index: 5 !important;
+    }
+</style>
 </head>
 <body data-scene="scene-intro">
     
