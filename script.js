@@ -1,26 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. INIT CONFIG DATA
     document.getElementById('intro-text').innerText = CONFIG.introText;
-    document.getElementById('start-btn').innerText = CONFIG.startButtonText;
     document.getElementById('quiz-intro').innerText = CONFIG.quizText;
     document.getElementById('gift-text').innerText = CONFIG.giftText;
-    document.getElementById('open-gift-btn').innerText = CONFIG.giftButton;
     document.getElementById('bday-name').innerText = CONFIG.name;
     document.getElementById('final-wall-text').innerText = CONFIG.finalWallText;
     document.getElementById('bg-music').src = CONFIG.music;
 
-    // State
     let currentScene = 'scene-intro';
     let currentQuizIndex = 0;
     
-    // Scene Switcher
+    // SCENE SWITCHER & BACKGROUND COLOR LOGIC
     function switchScene(nextSceneId, allowScroll = false) {
         document.getElementById(currentScene).classList.remove('active');
         const next = document.getElementById(nextSceneId);
         next.classList.add('active');
         currentScene = nextSceneId;
         
-        // Handle scrolling state
+        // Update body attribute for CSS background transition
+        document.body.setAttribute('data-scene', nextSceneId);
+        
         if (allowScroll) {
             document.body.classList.add('scrollable');
         } else {
@@ -29,52 +28,91 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 2. BACKGROUND STARS
+    // 2. MAGICAL SPARKLE SYSTEM
+    const sparkleChars = ['✦', '✧', '✨', '⋆', '💖'];
+    const sparkleColors = ['#A855F7', '#EC4899', '#22D3EE', '#FDE047', '#FFFFFF'];
+    const sparkleContainer = document.getElementById('sparkles-container');
+
+    function createSparkle(x, y, auto = false) {
+        const sparkle = document.createElement('span');
+        sparkle.className = 'sparkle';
+        sparkle.innerText = sparkleChars[Math.floor(Math.random() * sparkleChars.length)];
+        sparkle.style.color = sparkleColors[Math.floor(Math.random() * sparkleColors.length)];
+        
+        // Position
+        const posX = x !== undefined ? x : Math.random() * window.innerWidth;
+        const posY = y !== undefined ? y : Math.random() * window.innerHeight;
+        sparkle.style.left = `${posX}px`;
+        sparkle.style.top = `${posY}px`;
+        
+        // Randomize animation duration
+        const duration = Math.random() * 1 + 0.5; // 0.5s to 1.5s
+        sparkle.style.animationDuration = `${duration}s`;
+        
+        sparkleContainer.appendChild(sparkle);
+        setTimeout(() => sparkle.remove(), duration * 1000);
+    }
+
+    // Auto generate sparkles
+    setInterval(() => {
+        if(currentScene !== 'scene-fireworks') {
+            for(let i = 0; i < 3; i++) createSparkle();
+        }
+    }, 400);
+
+    // Mouse move sparkles
+    document.addEventListener('mousemove', (e) => {
+        if(Math.random() > 0.8 && currentScene !== 'scene-fireworks') {
+            createSparkle(e.clientX, e.clientY);
+        }
+    });
+
+    // 3. BACKGROUND STARS (Subtle overlay)
     const bgCanvas = document.getElementById('bg-canvas');
     const ctxBg = bgCanvas.getContext('2d');
-    bgCanvas.width = window.innerWidth;
-    bgCanvas.height = window.innerHeight;
+    function resizeCanvas() {
+        bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
     
-    const stars = Array.from({length: 100}, () => ({
-        x: Math.random() * bgCanvas.width,
-        y: Math.random() * bgCanvas.height,
-        r: Math.random() * 1.5,
-        alpha: Math.random()
+    const stars = Array.from({length: 80}, () => ({
+        x: Math.random() * bgCanvas.width, y: Math.random() * bgCanvas.height,
+        r: Math.random() * 2, alpha: Math.random(), velocity: Math.random() * 0.5 + 0.1
     }));
 
     function drawBg() {
         ctxBg.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+        if(currentScene === 'scene-fireworks') return requestAnimationFrame(drawBg); // Hide stars during fireworks
+        
         stars.forEach(star => {
-            ctxBg.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
-            ctxBg.beginPath();
-            ctxBg.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-            ctxBg.fill();
-            star.y -= 0.2; // Move up slowly
+            ctxBg.fillStyle = `rgba(255, 255, 255, ${star.alpha * 0.5})`; // Very soft
+            ctxBg.beginPath(); ctxBg.arc(star.x, star.y, star.r, 0, Math.PI * 2); ctxBg.fill();
+            star.y -= star.velocity; 
             if(star.y < 0) star.y = bgCanvas.height;
         });
         requestAnimationFrame(drawBg);
     }
     drawBg();
 
-    // 3. MUSIC CONTROLS
+    // 4. MUSIC CONTROLS
     const musicBtn = document.getElementById('music-btn');
     const audio = document.getElementById('bg-music');
     let isPlaying = false;
 
     musicBtn.addEventListener('click', () => {
-        if (isPlaying) {
-            audio.pause();
-            musicBtn.classList.remove('playing');
-        } else {
-            audio.play().catch(e => console.log("Audio play failed:", e));
-            musicBtn.classList.add('playing');
-        }
+        if (isPlaying) { audio.pause(); musicBtn.classList.remove('playing'); } 
+        else { audio.play(); musicBtn.classList.add('playing'); }
         isPlaying = !isPlaying;
     });
 
-    // 4. SCENE 1 -> 2 (INTRO to TIMELINE)
+    // 5. INTRO -> TIMELINE
     document.getElementById('start-btn').addEventListener('click', () => {
-        if (!isPlaying) musicBtn.click(); // Auto play music
+        if (!isPlaying) musicBtn.click();
+        
+        // Burst of sparkles
+        for(let i=0; i<30; i++) createSparkle(window.innerWidth/2 + (Math.random()-0.5)*200, window.innerHeight/2 + (Math.random()-0.5)*200);
+
         renderTimeline();
         switchScene('scene-timeline', true);
     });
@@ -83,36 +121,27 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderTimeline() {
         const container = document.getElementById('timeline-container');
         container.innerHTML = '';
-        CONFIG.memories.forEach((mem, index) => {
-            const el = document.createElement('div');
-            el.className = 'timeline-item';
+        CONFIG.memories.forEach((mem) => {
+            const el = document.createElement('div'); el.className = 'timeline-item';
             el.innerHTML = `
                 <div class="memory-card">
                     <span class="year-badge">${mem.year}</span>
-                    <img src="${mem.image}" alt="Memory ${mem.year}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzQ0NCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg=='">
-                    <h3 class="cinzel-font">${mem.title}</h3>
-                    <p>${mem.description}</p>
-                </div>
-            `;
+                    <img src="${mem.image}" alt="Memory" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90bzwvdGV4dD48L3N2Zz4='">
+                    <h3 class="heading-font text-gradient">${mem.title}</h3>
+                    <p style="color: #4b5563; margin-top: 8px;">${mem.description}</p>
+                </div>`;
             container.appendChild(el);
         });
 
-        // Intersection Observer for scroll animations
         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.3 });
-        
+            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+        }, { threshold: 0.2 });
         document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
     }
 
-    // 5. SCENE 2 -> 3 (TIMELINE to QUIZ)
+    // 6. TIMELINE -> QUIZ
     document.getElementById('to-quiz-btn').addEventListener('click', () => {
-        renderQuiz();
-        switchScene('scene-quiz', false);
+        renderQuiz(); switchScene('scene-quiz', false);
     });
 
     function renderQuiz() {
@@ -122,9 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         optionsContainer.innerHTML = '';
         
         qData.options.forEach((opt, idx) => {
-            const btn = document.createElement('button');
-            btn.className = 'quiz-btn';
-            btn.innerText = opt;
+            const btn = document.createElement('button'); btn.className = 'quiz-btn'; btn.innerText = opt;
             btn.onclick = () => handleQuizAnswer(btn, idx, qData.answer);
             optionsContainer.appendChild(btn);
         });
@@ -133,28 +160,25 @@ document.addEventListener("DOMContentLoaded", () => {
     function handleQuizAnswer(btn, selected, correct) {
         if (selected === correct) {
             btn.classList.add('correct');
-            // Check if end of quiz
+            for(let i=0; i<10; i++) createSparkle(btn.getBoundingClientRect().left + Math.random()*200, btn.getBoundingClientRect().top);
+            
             setTimeout(() => {
                 currentQuizIndex++;
-                if (currentQuizIndex < CONFIG.quiz.length) {
-                    renderQuiz();
-                } else {
+                if (currentQuizIndex < CONFIG.quiz.length) renderQuiz();
+                else {
                     document.getElementById('quiz-content').classList.add('hidden');
                     document.getElementById('quiz-success').classList.remove('hidden');
                 }
             }, 1000);
         } else {
-            btn.classList.add('wrong');
-            setTimeout(() => btn.classList.remove('wrong'), 500);
+            btn.classList.add('wrong'); setTimeout(() => btn.classList.remove('wrong'), 500);
         }
     }
 
-    // 6. SCENE 3 -> 4 (QUIZ to GIFT)
-    document.getElementById('to-gift-btn').addEventListener('click', () => {
-        switchScene('scene-gift', false);
-    });
+    // 7. QUIZ -> GIFT
+    document.getElementById('to-gift-btn').addEventListener('click', () => switchScene('scene-gift', false));
 
-    // 7. OPEN GIFT -> MESSAGE
+    // 8. OPEN GIFT -> MESSAGE
     document.getElementById('open-gift-btn').addEventListener('click', function() {
         this.style.display = 'none';
         const box = document.getElementById('gift-box');
@@ -165,11 +189,15 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             box.classList.remove('shake');
             lid.classList.add('open');
-            // Thêm hiệu ứng chói sáng
+            
+            // Light burst
             const flash = document.createElement('div');
-            flash.style.cssText = "position:absolute; inset:0; background:white; opacity:0; z-index:100; transition:opacity 1s;";
+            flash.style.cssText = "position:absolute; inset:0; background:radial-gradient(circle, #fff, transparent); opacity:0; z-index:100; transition:opacity 0.8s;";
             document.body.appendChild(flash);
             
+            // Burst particles
+            for(let i=0; i<50; i++) createSparkle(window.innerWidth/2, window.innerHeight/2);
+
             setTimeout(() => {
                 flash.style.opacity = '1';
                 setTimeout(() => {
@@ -177,13 +205,12 @@ document.addEventListener("DOMContentLoaded", () => {
                     flash.style.opacity = '0';
                     setTimeout(() => flash.remove(), 1000);
                     startTypewriter();
-                }, 1000);
-            }, 800);
-            
+                }, 800);
+            }, 600);
         }, 1500);
     });
 
-    // 8. TYPEWRITER EFFECT
+    // 9. TYPEWRITER
     async function startTypewriter() {
         const container = document.getElementById('typewriter-text');
         container.innerHTML = '';
@@ -195,93 +222,127 @@ document.addEventListener("DOMContentLoaded", () => {
             const text = CONFIG.birthdayMessage[i];
             for (let j = 0; j < text.length; j++) {
                 line.innerHTML = text.substring(0, j + 1) + '<span class="cursor"></span>';
-                await new Promise(r => setTimeout(r, 60)); // Typing speed
+                await new Promise(r => setTimeout(r, 60)); // typing speed
             }
-            line.innerHTML = text; // Remove cursor from finished line
-            await new Promise(r => setTimeout(r, 800)); // Delay between lines
+            line.innerHTML = text; 
+            await new Promise(r => setTimeout(r, 600)); // delay line
         }
         
-        // Auto transition to fireworks after 3s
         setTimeout(() => {
             switchScene('scene-fireworks', false);
             startFireworks();
-        }, 3000);
+        }, 2000);
     }
 
-    // 9. FIREWORKS CANVAS
+    // 10. COLORFUL FIREWORKS SYSTEM
     let fwInterval;
     function startFireworks() {
         const fwCanvas = document.getElementById('fireworks-canvas');
         const ctxFw = fwCanvas.getContext('2d');
-        fwCanvas.width = window.innerWidth;
-        fwCanvas.height = window.innerHeight;
+        
+        function resizeFw() { fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeFw); resizeFw();
         
         let particles = [];
         
-        function createExplosion(x, y) {
-            const colors = ['#8b5cf6', '#c4b5fd', '#fde047', '#ff71ce'];
-            for(let i=0; i<50; i++) {
+        // Pháo hoa sinh nhật có nhiều bảng màu tươi sáng
+        const palettes = [
+            ['#A855F7', '#EC4899', '#FFFFFF'], // Purple, Pink, White
+            ['#22D3EE', '#38BDF8', '#FFFFFF'], // Cyan, Blue, White
+            ['#FDE047', '#EC4899', '#D8B4FE'], // Gold, Pink, Lavender
+            ['#10B981', '#38BDF8', '#FDE047']  // Emerald, Blue, Gold
+        ];
+
+        function createExplosion(x, y, isBig = false) {
+            const palette = palettes[Math.floor(Math.random() * palettes.length)];
+            const particleCount = isBig ? 150 : 60;
+            
+            for(let i=0; i<particleCount; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = (Math.random() * (isBig ? 12 : 7)) + 1;
                 particles.push({
                     x, y,
-                    vx: (Math.random() - 0.5) * 10,
-                    vy: (Math.random() - 0.5) * 10,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
                     alpha: 1,
-                    color: colors[Math.floor(Math.random() * colors.length)]
+                    decay: Math.random() * 0.015 + 0.01,
+                    color: palette[Math.floor(Math.random() * palette.length)],
+                    size: Math.random() * 3 + 1
                 });
             }
         }
 
         function animateFw() {
-            ctxFw.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+            // Hiệu ứng Trail mờ dần thay vì xóa toàn bộ
+            ctxFw.globalCompositeOperation = 'destination-out';
+            ctxFw.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctxFw.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+            ctxFw.globalCompositeOperation = 'lighter';
+
             for(let i=0; i<particles.length; i++) {
                 let p = particles[i];
-                p.x += p.vx;
-                p.y += p.vy;
-                p.vy += 0.1; // gravity
-                p.alpha -= 0.015;
+                p.x += p.vx; p.y += p.vy;
+                p.vy += 0.05; // gravity nhẹ hơn
+                p.alpha -= p.decay;
                 
                 ctxFw.globalAlpha = p.alpha;
                 ctxFw.fillStyle = p.color;
                 ctxFw.beginPath();
-                ctxFw.arc(p.x, p.y, 3, 0, Math.PI*2);
+                ctxFw.arc(p.x, p.y, p.size, 0, Math.PI*2);
                 ctxFw.fill();
                 
-                if(p.alpha <= 0) {
-                    particles.splice(i, 1);
-                    i--;
-                }
+                if(p.alpha <= 0) { particles.splice(i, 1); i--; }
             }
             ctxFw.globalAlpha = 1;
             fwInterval = requestAnimationFrame(animateFw);
         }
+        
+        // Bắt đầu animation
         animateFw();
         
-        // Random explosions
-        setInterval(() => {
-            if(currentScene === 'scene-fireworks') {
+        // MASSIVE FINALE LÚC MỚI VÀO
+        setTimeout(() => {
+            createExplosion(fwCanvas.width/2, fwCanvas.height/3, true);
+            setTimeout(() => createExplosion(fwCanvas.width/3, fwCanvas.height/4), 300);
+            setTimeout(() => createExplosion(fwCanvas.width/1.5, fwCanvas.height/4), 600);
+        }, 500);
+        
+        // Random fireworks
+        const autoFw = setInterval(() => {
+            if(currentScene === 'scene-fireworks' && Math.random() > 0.4) {
                 createExplosion(Math.random() * fwCanvas.width, Math.random() * fwCanvas.height * 0.5);
             }
-        }, 800);
+        }, 1200);
+
+        // Click để bắn pháo hoa
+        fwCanvas.addEventListener('click', (e) => {
+            if(currentScene === 'scene-fireworks') {
+                createExplosion(e.clientX, e.clientY);
+                // Tạo thêm sparkle khi click
+                for(let i=0; i<5; i++) createSparkle(e.clientX, e.clientY);
+            }
+        });
+
+        // Xóa interval khi rời scene
+        document.getElementById('to-wall-btn').addEventListener('click', () => clearInterval(autoFw), {once: true});
     }
 
-    // 10. SCENE 6 -> 7 (FIREWORKS to FINAL WALL)
+    // 11. FIREWORKS -> FINAL WALL
     document.getElementById('to-wall-btn').addEventListener('click', () => {
         cancelAnimationFrame(fwInterval);
         document.getElementById('fireworks-canvas').style.display = 'none';
-        renderWall();
-        switchScene('scene-wall', true);
+        renderWall(); switchScene('scene-wall', true);
     });
 
     function renderWall() {
         const grid = document.getElementById('masonry-grid');
         grid.innerHTML = '';
         CONFIG.memories.forEach(mem => {
-            const rotation = (Math.random() - 0.5) * 20; // Random rotate -10 to 10 deg
-            const el = document.createElement('div');
-            el.className = 'polaroid';
+            const rotation = (Math.random() - 0.5) * 15;
+            const el = document.createElement('div'); el.className = 'polaroid';
             el.style.transform = `rotate(${rotation}deg)`;
             el.innerHTML = `
-                <img src="${mem.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzQ0NCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TGVnYWN5PC90ZXh0Pjwvc3ZnPg=='">
+                <img src="${mem.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90bzwvdGV4dD48L3N2Zz4='">
                 <p>${mem.year}</p>
             `;
             grid.appendChild(el);
@@ -289,7 +350,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // REPLAY
-    document.getElementById('replay-btn').addEventListener('click', () => {
-        location.reload();
-    });
+    document.getElementById('replay-btn').addEventListener('click', () => location.reload());
 });
