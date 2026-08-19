@@ -117,53 +117,49 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScene('scene-timeline', true);
     });
 
-  // RENDER TIMELINE (Giao diện ngang)
+ // RENDER TIMELINE (Giãn cách & Cuộn ngang)
     function renderTimeline() {
         const container = document.getElementById('timeline-container');
         container.innerHTML = '';
+        
+        // Render từng ảnh
         CONFIG.memories.forEach((mem) => {
             const el = document.createElement('div'); el.className = 'timeline-item';
             el.innerHTML = `
-                <div class="magic-marker" onclick="popPhotos(event)">✨</div>
+                <div class="magic-marker" onclick="popPhoto(this)">✨</div>
                 <div class="memory-card">
                     <span class="year-badge">${mem.year}</span>
-                    <img src="${mem.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90bzwvdGV4dD48L3N2Zz4='">
+                    <img class="memory-img" src="${mem.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90bzwvdGV4dD48L3N2Zz4='">
                     <h3 class="heading-font text-gradient">${mem.title}</h3>
                     <p style="color: #4b5563; margin-top: 8px;">${mem.description}</p>
                 </div>`;
             container.appendChild(el);
         });
+
+        // Ẩn div bọc nút cũ và Di chuyển nút "Tiếp tục" xuống cuối dòng cuộn ngang
+        const oldBtnContainer = document.querySelector('#scene-timeline .flex-center.mt-4');
+        if (oldBtnContainer) oldBtnContainer.style.display = 'none';
+        
+        const nextBtn = document.getElementById('to-quiz-btn');
+        nextBtn.classList.add('timeline-end-btn'); // Thêm class mới
+        nextBtn.innerHTML = "TIẾP TỤC 💫";
+        container.appendChild(nextBtn); // Gắn nút vào cuối cùng của thanh cuộn
     }
 
-    // CHỨC NĂNG BẤM MỐC THỜI GIAN BẮN ẢNH TUNG TÓE
-    window.popPhotos = function(e) {
-        // 👉 BẠN TỰ THÊM ĐƯỜNG DẪN ẢNH CỦA BẠN VÀO MẢNG NÀY NHÉ:
-        const popImages = [
-            'assets/images/1.jpg', 
-            'assets/images/2.jpg',
-            'assets/images/3.jpg'
-        ];
+    // CHỨC NĂNG BẤM MỐC THỜI GIAN -> PHÓNG TO ẢNH (Bấm lần nữa để thu nhỏ)
+    window.popPhoto = function(btn) {
+        // Tìm bức ảnh tương ứng trong cùng một mốc thời gian
+        const item = btn.closest('.timeline-item');
+        const img = item.querySelector('.memory-img');
         
-        for(let i = 0; i < 6; i++) { // Bắn ra 6 ảnh mỗi lần click
-            const img = document.createElement('img');
-            img.src = popImages[Math.floor(Math.random() * popImages.length)];
-            img.className = 'photo-confetti';
-            img.onerror = function() { this.style.display = 'none'; }; // Ẩn đi nếu bạn chưa up ảnh
-            document.body.appendChild(img);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = 80 + Math.random() * 150;
-            const tx = Math.cos(angle) * velocity;
-            const ty = Math.sin(angle) * velocity - 50; 
-            const rot = (Math.random() - 0.5) * 360;
-            
-            img.style.left = e.clientX + 'px';
-            img.style.top = e.clientY + 'px';
-            img.style.setProperty('--tx', tx + 'px');
-            img.style.setProperty('--ty', ty + 'px');
-            img.style.setProperty('--rot', rot + 'deg');
-            
-            setTimeout(() => img.remove(), 1000); // 1 giây sau ảnh tự biến mất
+        // Bật/tắt class popped (phóng to/thu nhỏ)
+        img.classList.toggle('popped');
+        
+        // Tạo một chút kim tuyến bay ra quanh nút bấm cho có cảm giác "Magical"
+        if(typeof createSparkle === "function") {
+            for(let i=0; i<5; i++) {
+                createSparkle(btn.getBoundingClientRect().left + 20, btn.getBoundingClientRect().top + 20);
+            }
         }
     }
     // 6. TIMELINE -> QUIZ
