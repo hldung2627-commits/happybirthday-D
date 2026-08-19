@@ -1,7 +1,7 @@
 const CONFIG = {
     // Thông tin chung
     name: "Tên Của Bạn",
-    music: "assets/music/birthday.mp3",
+    music: "birthday.mp3",
     
     // Scene 1: Intro
     introText: "Hey, I have something magical for you...",
@@ -11,19 +11,19 @@ const CONFIG = {
     memories: [
         {
             year: "2021",
-            image: "assets/images/1.jpg", // Đặt ảnh vào thư mục assets/images
+            image: "1.jpg", // Đặt ảnh vào thư mục assets/images
             title: "Ngày đầu tiên...",
             description: "Một ngày bình thường nhưng lại là khởi đầu cho những điều tuyệt vời nhất."
         },
         {
             year: "2022",
-            image: "assets/images/2.jpg",
+            image: "2.jpg",
             title: "Những chuyến đi",
             description: "Cùng nhau đi qua những con phố, lưu lại những nụ cười rạng rỡ nhất."
         },
         {
             year: "2023",
-            image: "assets/images/3.jpg",
+            image: "3.jpg",
             title: "Trưởng thành cùng nhau",
             description: "Cảm ơn cậu vì đã luôn ở đó, lắng nghe và chia sẻ mọi khoảnh khắc."
         }
