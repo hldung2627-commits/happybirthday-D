@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScene('scene-timeline', true);
     });
 
-   // RENDER TIMELINE (Giao diện ngang)
+  // RENDER TIMELINE (Giao diện ngang)
     function renderTimeline() {
         const container = document.getElementById('timeline-container');
         container.innerHTML = '';
