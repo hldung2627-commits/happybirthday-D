@@ -117,49 +117,84 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScene('scene-timeline', true);
     });
 
- // RENDER TIMELINE (Giãn cách & Cuộn ngang)
+ // RENDER TIMELINE DỌC
     function renderTimeline() {
         const container = document.getElementById('timeline-container');
         container.innerHTML = '';
         
-        // Render từng ảnh
-        CONFIG.memories.forEach((mem) => {
+        CONFIG.memories.forEach((mem, index) => {
             const el = document.createElement('div'); el.className = 'timeline-item';
             el.innerHTML = `
-                <div class="magic-marker" onclick="popPhoto(this)">✨</div>
-                <div class="memory-card">
-                    <span class="year-badge">${mem.year}</span>
-                    <img class="memory-img" src="${mem.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90bzwvdGV4dD48L3N2Zz4='">
+                <div class="marker-wrapper" onclick="popPhoto(this, ${index})">
+                    <div class="year-label">${mem.year}</div>
+                    <div class="magic-marker">✨</div>
+                </div>
+                <div class="memory-text-card">
                     <h3 class="heading-font text-gradient">${mem.title}</h3>
                     <p style="color: #4b5563; margin-top: 8px;">${mem.description}</p>
-                </div>`;
+                </div>
+                <div class="scattered-photos-container"></div>
+            `;
             container.appendChild(el);
         });
 
-        // Ẩn div bọc nút cũ và Di chuyển nút "Tiếp tục" xuống cuối dòng cuộn ngang
+        // Chuyển nút tiếp tục xuống cuối
         const oldBtnContainer = document.querySelector('#scene-timeline .flex-center.mt-4');
         if (oldBtnContainer) oldBtnContainer.style.display = 'none';
         
         const nextBtn = document.getElementById('to-quiz-btn');
-        nextBtn.classList.add('timeline-end-btn'); // Thêm class mới
+        nextBtn.classList.add('timeline-end-btn');
         nextBtn.innerHTML = "TIẾP TỤC 💫";
-        container.appendChild(nextBtn); // Gắn nút vào cuối cùng của thanh cuộn
+        container.appendChild(nextBtn);
     }
 
-    // CHỨC NĂNG BẤM MỐC THỜI GIAN -> PHÓNG TO ẢNH (Bấm lần nữa để thu nhỏ)
-    window.popPhoto = function(btn) {
-        // Tìm bức ảnh tương ứng trong cùng một mốc thời gian
-        const item = btn.closest('.timeline-item');
-        const img = item.querySelector('.memory-img');
+    // LOGIC TÍNH TOÁN BẮN ẢNH VÀ Ở LẠI MÀN HÌNH
+    window.popPhoto = function(btnWrapper, index) {
+        const item = btnWrapper.closest('.timeline-item');
+        const textCard = item.querySelector('.memory-text-card');
+        const photoContainer = item.querySelector('.scattered-photos-container');
         
-        // Bật/tắt class popped (phóng to/thu nhỏ)
-        img.classList.toggle('popped');
-        
-        // Tạo một chút kim tuyến bay ra quanh nút bấm cho có cảm giác "Magical"
-        if(typeof createSparkle === "function") {
-            for(let i=0; i<5; i++) {
-                createSparkle(btn.getBoundingClientRect().left + 20, btn.getBoundingClientRect().top + 20);
+        // Tự động thu dọn năm khác nếu đang mở
+        document.querySelectorAll('.timeline-item').forEach(otherItem => {
+            if(otherItem !== item) {
+                otherItem.querySelector('.memory-text-card').classList.remove('show-text');
+                otherItem.querySelector('.scattered-photos-container').innerHTML = ''; 
+                otherItem.classList.remove('is-open');
             }
+        });
+
+        const isOpen = item.classList.contains('is-open');
+        
+        if (isOpen) {
+            // Đóng lời chúc và dọn ảnh
+            textCard.classList.remove('show-text');
+            photoContainer.innerHTML = '';
+            item.classList.remove('is-open');
+        } else {
+            // Bung lời chúc và bắn ảnh
+            item.classList.add('is-open');
+            textCard.classList.add('show-text');
+            
+            const mem = CONFIG.memories[index];
+            const imgsList = Array.isArray(mem.images) ? mem.images : (mem.image ? [mem.image] : []);
+            
+            imgsList.forEach((src, i) => {
+                const img = document.createElement('img');
+                img.src = src; img.className = 'scattered-photo';
+                img.onerror = function() { this.style.display = 'none'; };
+                
+                // Thuật toán rải ảnh ngẫu nhiên sang trái/phải
+                const isLeft = i % 2 === 0;
+                const signX = isLeft ? -1 : 1;
+                const tx = signX * (90 + Math.random() * 60); 
+                const ty = (Math.random() - 0.5) * 220; 
+                const rot = (Math.random() - 0.5) * 70;       
+                
+                img.style.setProperty('--tx', tx + 'px');
+                img.style.setProperty('--ty', ty + 'px');
+                img.style.setProperty('--rot', rot + 'deg');
+                photoContainer.appendChild(img);
+            });
         }
     }
     // 6. TIMELINE -> QUIZ
