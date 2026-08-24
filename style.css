@@ -268,16 +268,22 @@ button {
 }
 .marker-wrapper:hover .magic-marker { transform: scale(1.2); }
 
-/* Lời Chúc (Nằm giữa) */
+/* Lời Chúc (Hiển thị sẵn từ đầu) */
 .memory-text-card {
-    position: absolute; top: 60px; left: 50%; transform: translateX(-50%) scale(0);
-    width: 320px; opacity: 0; visibility: hidden; pointer-events: none;
+    position: absolute; top: 60px; left: 50%; transform: translateX(-50%) scale(1);
+    width: 320px; opacity: 1; visibility: visible; pointer-events: auto;
     background: rgba(255,255,255,0.95); border: 3px solid white; border-radius: 20px; 
     padding: 20px; backdrop-filter: blur(10px); box-shadow: 0 15px 30px rgba(168, 85, 247, 0.3); 
-    z-index: 30; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 30; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-.memory-text-card.show-text { transform: translateX(-50%) scale(1); opacity: 1; visibility: visible; pointer-events: auto; }
 
+/* KHI BẤM NÚT MỞ ẢNH -> ẨN CHỮ ĐI */
+.timeline-item.is-open .memory-text-card {
+    transform: translateX(-50%) scale(0.5); /* Thu nhỏ lại */
+    opacity: 0; /* Trong suốt */
+    visibility: hidden; 
+    pointer-events: none; 
+}
 /* Container chứa ảnh bắn ra */
 .scattered-photos-container { position: absolute; top: 25px; left: 50%; width: 0; height: 0; z-index: 15; pointer-events: none; }
 
