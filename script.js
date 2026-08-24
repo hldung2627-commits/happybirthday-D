@@ -237,34 +237,48 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('to-gift-btn').addEventListener('click', () => switchScene('scene-gift', false));
 
     // 8. OPEN GIFT -> MESSAGE
+   // 8. HỘP QUÀ PHÁT NỔ (MAGIC EXPLOSION)
     document.getElementById('open-gift-btn').addEventListener('click', function() {
-        this.style.display = 'none';
+        this.style.display = 'none'; // Giấu nút đi
         const box = document.getElementById('gift-box');
-        const lid = document.getElementById('box-lid');
         
+        // 1. Box tụ năng lượng và rung lắc bần bật
+        box.classList.add('energy-gather');
         box.classList.add('shake');
         
+        // 2. Chờ 1.5s rồi phát nổ
         setTimeout(() => {
             box.classList.remove('shake');
-            lid.classList.add('open');
+            box.classList.add('explode'); // Văng các mảnh hộp ra
             
-            // Light burst
+            // Tạo quả cầu ánh sáng chói lóa
             const flash = document.createElement('div');
-            flash.style.cssText = "position:absolute; inset:0; background:radial-gradient(circle, #fff, transparent); opacity:0; z-index:100; transition:opacity 0.8s;";
+            flash.style.cssText = "position:absolute; inset:0; background:radial-gradient(circle, #fff 0%, transparent 80%); opacity:0; z-index:100; transition: opacity 0.4s ease-out;";
             document.body.appendChild(flash);
             
-            // Burst particles
-            for(let i=0; i<50; i++) createSparkle(window.innerWidth/2, window.innerHeight/2);
-
+            // Xả một lượng kim tuyến khổng lồ
+            if(typeof createSparkle === "function") {
+                for(let i = 0; i < 80; i++) {
+                    createSparkle(
+                        window.innerWidth/2 + (Math.random()-0.5)*500, 
+                        window.innerHeight/2 + (Math.random()-0.5)*500
+                    );
+                }
+            }
+            
+            // 3. Chuyển sáng rực màn hình rồi vô thiệp sinh nhật
             setTimeout(() => {
-                flash.style.opacity = '1';
+                flash.style.opacity = '1'; // Sáng lóa
+                flash.style.background = '#ffffff'; // Phủ trắng toàn màn hình
+                
                 setTimeout(() => {
-                    switchScene('scene-message', false);
-                    flash.style.opacity = '0';
+                    switchScene('scene-message', false); // Chuyển cảnh
+                    flash.style.opacity = '0'; // Giảm sáng từ từ
                     setTimeout(() => flash.remove(), 1000);
-                    startTypewriter();
-                }, 800);
-            }, 600);
+                    startTypewriter(); // Bắt đầu gõ chữ
+                }, 500);
+            }, 300); // Ánh sáng bùng lên sau 0.3s nổ
+            
         }, 1500);
     });
 
