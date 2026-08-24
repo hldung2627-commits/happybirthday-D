@@ -149,31 +149,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // LOGIC TÍNH TOÁN BẮN ẢNH VÀ Ở LẠI MÀN HÌNH
+  // LOGIC BUNG ẢNH VÀ ẨN CHỮ (GIỮ LẠI ẢNH CŨ LẤP ĐẦY MÀN HÌNH)
     window.popPhoto = function(btnWrapper, index) {
         const item = btnWrapper.closest('.timeline-item');
-        const textCard = item.querySelector('.memory-text-card');
         const photoContainer = item.querySelector('.scattered-photos-container');
         
-        // Tự động thu dọn năm khác nếu đang mở
-        document.querySelectorAll('.timeline-item').forEach(otherItem => {
-            if(otherItem !== item) {
-                otherItem.querySelector('.memory-text-card').classList.remove('show-text');
-                otherItem.querySelector('.scattered-photos-container').innerHTML = ''; 
-                otherItem.classList.remove('is-open');
-            }
-        });
+        // Đã xóa đoạn code tự động thu dọn các năm khác ở đây!
 
         const isOpen = item.classList.contains('is-open');
         
         if (isOpen) {
-            // Đóng lời chúc và dọn ảnh
-            textCard.classList.remove('show-text');
+            // Đang mở -> Bấm để ĐÓNG: Thu ảnh lại và hiện chữ
             photoContainer.innerHTML = '';
             item.classList.remove('is-open');
         } else {
-            // Bung lời chúc và bắn ảnh
+            // Đang đóng -> Bấm để MỞ: Bắn ảnh ra và ẩn chữ
             item.classList.add('is-open');
-            textCard.classList.add('show-text');
             
             const mem = CONFIG.memories[index];
             const imgsList = Array.isArray(mem.images) ? mem.images : (mem.image ? [mem.image] : []);
@@ -183,11 +174,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.src = src; img.className = 'scattered-photo';
                 img.onerror = function() { this.style.display = 'none'; };
                 
-                // Thuật toán rải ảnh ngẫu nhiên sang trái/phải
+                // Thuật toán rải ảnh (bay xa và rộng hơn một chút để lấp đầy màn hình)
                 const isLeft = i % 2 === 0;
                 const signX = isLeft ? -1 : 1;
-                const tx = signX * (90 + Math.random() * 60); 
-                const ty = (Math.random() - 0.5) * 220; 
+                const tx = signX * (100 + Math.random() * 80); 
+                const ty = (Math.random() - 0.5) * 260; 
                 const rot = (Math.random() - 0.5) * 70;       
                 
                 img.style.setProperty('--tx', tx + 'px');
@@ -195,6 +186,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.style.setProperty('--rot', rot + 'deg');
                 photoContainer.appendChild(img);
             });
+
+            // Hiệu ứng kim tuyến
+            if(typeof createSparkle === "function") {
+                for(let j=0; j<8; j++) {
+                    createSparkle(btnWrapper.getBoundingClientRect().left + 40, btnWrapper.getBoundingClientRect().top + 20);
+                }
+            }
         }
     }
     // 6. TIMELINE -> QUIZ
