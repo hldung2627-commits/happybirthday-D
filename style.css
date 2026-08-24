@@ -362,12 +362,30 @@ button {
 .lid-left   { transform: rotateY(-90deg) translateZ(85px); }
 .lid-right  { transform: rotateY(90deg) translateZ(85px); }
 
-/* Kéo mặt trên cùng lên đúng đỉnh nắp */
+/* Đẩy mặt nắp lên đỉnh viền (Lên trên thay vì lún xuống) */
 .lid-top { 
     height: 170px !important; 
-    top: -65px !important; /* Trọng tâm chuẩn */
-    transform: rotateX(90deg) translateZ(20px); 
+    top: -65px !important; 
+    transform: rotateX(90deg) translateZ(-20px) !important; 
     background: #e0f2fe !important; 
+}
+
+/* Ruy băng & Nơ (Nổi lên hẳn khỏi mặt nắp) */
+.ribbon-vertical { 
+    position: absolute; width: 24px; height: 170px; background: var(--gold); 
+    top: -65px; left: 73px; 
+    transform: rotateX(90deg) translateZ(-21px) !important; 
+}
+.ribbon-horizontal { 
+    position: absolute; width: 170px; height: 24px; background: var(--gold); 
+    top: 8px; left: 0; 
+    transform: rotateX(90deg) translateZ(-21px) !important; 
+}
+.bow {
+    position: absolute; width: 60px; height: 60px; 
+    border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
+    top: -10px; left: 55px; 
+    transform: rotateX(90deg) translateZ(-35px) rotateZ(45deg) !important; 
 }
 
 /* Ruy băng & Nơ (Kéo lên khỏi mặt nắp 1px để không bị lún) */
