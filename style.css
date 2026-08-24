@@ -311,35 +311,51 @@ button {
 .quiz-btn.wrong { background: #f87171; border-color: #dc2626; color: white; animation: shake 0.4s; }
 .hidden { display: none !important; }
 
-/* ================= 3D GIFT BOX TÁI SINH & PHÁT NỔ ================= */
-.gift-wrapper { perspective: 1200px; display: flex; flex-direction: column; align-items: center; }
+/* ================= 3D GIFT BOX (BẢN HOÀN HẢO) ================= */
+.gift-wrapper { 
+    perspective: 1200px; 
+    display: flex; flex-direction: column; align-items: center; 
+}
+
 .gift-box {
-    position: relative; width: 160px; height: 160px;
-    transform-style: preserve-3d; transform: rotateX(-20deg) rotateY(35deg);
-    transition: transform 0.5s; margin: 40px 0;
+    position: relative; 
+    width: 160px; height: 160px;
+    transform-style: preserve-3d; 
+    transform: rotateX(-20deg) rotateY(35deg);
+    margin: 80px 0; /* Cách lề trên dưới rộng hơn để nắp không bị cắt */
+    animation: floatBox 4s ease-in-out infinite; /* Hiệu ứng lơ lửng */
+}
+
+@keyframes floatBox {
+    0%, 100% { transform: rotateX(-20deg) rotateY(35deg) translateY(0); }
+    50% { transform: rotateX(-20deg) rotateY(35deg) translateY(-15px); }
 }
 
 /* Hiệu ứng tụ năng lượng (Rung & Thu nhỏ) */
-.gift-box.energy-gather { animation: gatherEnergy 1.5s ease-in-out forwards; }
+.gift-box.energy-gather { animation: gatherEnergy 1.5s ease-in-out forwards !important; }
 @keyframes gatherEnergy {
     0% { transform: rotateX(-20deg) rotateY(35deg) scale(1); }
     10% { transform: rotateX(-20deg) rotateY(35deg) scale(1.1); filter: brightness(1.2); }
-    100% { transform: rotateX(-20deg) rotateY(35deg) scale(0.7) translateY(40px); filter: brightness(1.8); }
+    100% { transform: rotateX(-20deg) rotateY(35deg) scale(0.7) translateY(40px); filter: brightness(2); }
 }
+
 .gift-box.shake { animation: energyShake 0.1s infinite; }
 @keyframes energyShake {
-    0%, 100% { margin-left: 0; margin-top: 40px; }
-    25% { margin-left: -5px; margin-top: 38px; }
-    75% { margin-left: 5px; margin-top: 42px; }
+    0%, 100% { margin-left: 0; margin-top: 80px; }
+    25% { margin-left: -5px; margin-top: 78px; }
+    75% { margin-left: 5px; margin-top: 82px; }
 }
 
 /* --- Thân Hộp --- */
-.box-body { position: absolute; width: 100%; height: 100%; transform-style: preserve-3d; }
+.box-body { 
+    position: absolute; width: 100%; height: 100%; 
+    transform-style: preserve-3d; 
+}
 .box-body .side {
     position: absolute; width: 160px; height: 160px;
     background: linear-gradient(135deg, var(--purple-main), var(--pink-soft));
-    border: 2px solid rgba(255,255,255,0.6);
-    transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1); /* Tốc độ văng mảnh */
+    border: 1px solid rgba(255,255,255,0.5); 
+    transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
 }
 .box-front  { transform: translateZ(80px); }
 .box-back   { transform: rotateY(180deg) translateZ(80px); }
@@ -347,62 +363,63 @@ button {
 .box-right  { transform: rotateY(90deg) translateZ(80px); }
 .box-bottom { transform: rotateX(-90deg) translateZ(80px); background: var(--purple-main); }
 
-/* --- Nắp Hộp (Đã vá kín và đậy đúng chiều) --- */
+/* --- Nắp Hộp (Đã canh chuẩn Toán học 3D) --- */
 .box-lid {
-    position: absolute; width: 170px; height: 40px; top: -40px; left: -5px;
-    transform-style: preserve-3d; transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
+    position: absolute; 
+    width: 170px; height: 170px; /* Phải là khung 170x170 để không bị lệch trọng tâm */
+    top: -5px; left: -5px;       /* Căn giữa nắp 170px so với thân 160px */
+    transform-style: preserve-3d; 
+    transform: translateY(-100px); /* Kéo TUỐT LÊN TRÊN -100px để đáy nắp chạm mép trên hộp */
+    transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
+    transform-origin: center center;
 }
-.box-lid .side { 
-    position: absolute; width: 170px; height: 40px; 
-    background: linear-gradient(to right, var(--cyan), var(--blue-sky)); 
-    border: 2px solid white; transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
-}
-.lid-front  { transform: translateZ(85px); }
-.lid-back   { transform: rotateY(180deg) translateZ(85px); }
-.lid-left   { transform: rotateY(-90deg) translateZ(85px); }
-.lid-right  { transform: rotateY(90deg) translateZ(85px); }
 
-/* Đẩy mặt nắp lên đỉnh viền (Lên trên thay vì lún xuống) */
-.lid-top { 
-    height: 170px !important; 
-    top: -65px !important; 
-    transform: rotateX(90deg) translateZ(-20px) !important; 
+/* Các mặt của nắp */
+.box-lid .side { 
+    position: absolute; 
+    background: linear-gradient(to right, var(--cyan), var(--blue-sky)); 
+    border: 1px solid rgba(255,255,255,0.7); 
+    transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
+}
+
+.lid-top {
+    width: 170px; height: 170px;
+    transform: rotateX(90deg) translateZ(20px); /* Nâng mặt đỉnh lên 20px */
     background: #e0f2fe !important; 
 }
 
-/* Ruy băng & Nơ (Nổi lên hẳn khỏi mặt nắp) */
+/* 4 cạnh viền nắp (cao 40px, nằm chính giữa thân nắp) */
+.lid-front  { width: 170px; height: 40px; transform: translateZ(85px); top: 65px; } 
+.lid-back   { width: 170px; height: 40px; transform: rotateY(180deg) translateZ(85px); top: 65px; }
+.lid-left   { width: 170px; height: 40px; transform: rotateY(-90deg) translateZ(85px); top: 65px; left: 0; }
+.lid-right  { width: 170px; height: 40px; transform: rotateY(90deg) translateZ(85px); top: 65px; left: 0; }
+
+/* --- Ruy băng & Nơ --- */
+.ribbon-vertical, .ribbon-horizontal { 
+    position: absolute; 
+    background: var(--gold); 
+    box-shadow: 0 0 15px rgba(253, 224, 71, 0.5); 
+}
+/* translateZ(22px) để nằm ĐÈ LÊN TRÊN lid-top (đang ở 20px) - Xóa lỗi chìm ruy băng */
 .ribbon-vertical { 
-    position: absolute; width: 24px; height: 170px; background: var(--gold); 
-    top: -65px; left: 73px; 
-    transform: rotateX(90deg) translateZ(-21px) !important; 
+    width: 24px; height: 170px; 
+    top: 0; left: 73px; 
+    transform: rotateX(90deg) translateZ(22px); 
 }
 .ribbon-horizontal { 
-    position: absolute; width: 170px; height: 24px; background: var(--gold); 
-    top: 8px; left: 0; 
-    transform: rotateX(90deg) translateZ(-21px) !important; 
-}
-.bow {
-    position: absolute; width: 60px; height: 60px; 
-    border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
-    top: -10px; left: 55px; 
-    transform: rotateX(90deg) translateZ(-35px) rotateZ(45deg) !important; 
+    width: 170px; height: 24px; 
+    top: 73px; left: 0; 
+    transform: rotateX(90deg) translateZ(22px); 
 }
 
-/* Ruy băng & Nơ (Kéo lên khỏi mặt nắp 1px để không bị lún) */
-.ribbon-vertical { position: absolute; width: 24px; height: 170px; background: var(--gold); top: -65px; left: 73px; transform: rotateX(90deg) translateZ(21px); }
-.ribbon-horizontal { position: absolute; width: 170px; height: 24px; background: var(--gold); top: 8px; left: 0; transform: rotateX(90deg) translateZ(21px); }
 .bow {
-    position: absolute; width: 60px; height: 60px; border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
-    top: -10px; left: 55px; 
-    transform: rotateX(90deg) translateZ(30px) rotateZ(45deg); 
-}
-
-/* Ruy băng & Nơ */
-.ribbon-vertical { position: absolute; width: 24px; height: 170px; background: var(--gold); top: 0; left: 73px; transform: rotateX(90deg) translateZ(21px); }
-.ribbon-horizontal { position: absolute; width: 170px; height: 24px; background: var(--gold); top: 73px; left: 0; transform: rotateX(90deg) translateZ(21px); }
-.bow {
-    position: absolute; width: 60px; height: 60px; border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
-    transform: rotateX(90deg) translateZ(40px) rotateZ(45deg); top: 55px; left: 55px;
+    position: absolute; 
+    width: 60px; height: 60px; 
+    border: 8px solid var(--gold); 
+    border-radius: 50% 50% 0 50%;
+    top: 55px; left: 55px; 
+    /* translateZ(40px) để NƠ NỔI HẲN LÊN CAO, vểnh lên nhìn cực xịn */
+    transform: rotateX(75deg) translateZ(40px) rotateZ(45deg); 
 }
 
 /* ================= HIỆU ỨNG NỔ VĂNG MẢNH KHI MỞ ================= */
@@ -411,7 +428,7 @@ button {
 .gift-box.explode .box-left   { transform: rotateY(-90deg) translateZ(500px) rotateZ(60deg); opacity: 0; }
 .gift-box.explode .box-right  { transform: rotateY(90deg) translateZ(500px) rotateZ(-60deg); opacity: 0; }
 .gift-box.explode .box-bottom { transform: rotateX(-90deg) translateZ(500px); opacity: 0; }
-.gift-box.explode .box-lid    { transform: translateY(-400px) rotateX(120deg) rotateZ(180deg) scale(1.5); opacity: 0; }
+.gift-box.explode .box-lid    { transform: translateY(-500px) rotateX(120deg) rotateZ(180deg) scale(1.5); opacity: 0; }
 /* Typewriter Message */
 .message-text { font-size: 1.4rem; line-height: 1.8; min-height: 150px; white-space: pre-line; font-weight: 700; color: #4c1d95; }
 .cursor { display: inline-block; width: 4px; height: 1.2em; background-color: var(--pink-hot); animation: blink 0.7s infinite; vertical-align: text-bottom; }
