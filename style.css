@@ -311,54 +311,78 @@ button {
 .quiz-btn.wrong { background: #f87171; border-color: #dc2626; color: white; animation: shake 0.4s; }
 .hidden { display: none !important; }
 
-/* 3D Gift Box */
-.gift-wrapper { perspective: 1000px; display: flex; flex-direction: column; align-items: center; }
+/* ================= 3D GIFT BOX TÁI SINH & PHÁT NỔ ================= */
+.gift-wrapper { perspective: 1200px; display: flex; flex-direction: column; align-items: center; }
 .gift-box {
     position: relative; width: 160px; height: 160px;
     transform-style: preserve-3d; transform: rotateX(-20deg) rotateY(35deg);
     transition: transform 0.5s; margin: 40px 0;
 }
-.gift-box.shake { animation: shakeBox 0.5s infinite; }
 
-/* ĐÂY CHÍNH LÀ THỦ PHẠM LÀM HỘP QUÀ BẸP DÚM - Cần phải có không gian 3D */
-.box-body {
-    position: absolute; width: 100%; height: 100%;
-    transform-style: preserve-3d;
+/* Hiệu ứng tụ năng lượng (Rung & Thu nhỏ) */
+.gift-box.energy-gather { animation: gatherEnergy 1.5s ease-in-out forwards; }
+@keyframes gatherEnergy {
+    0% { transform: rotateX(-20deg) rotateY(35deg) scale(1); }
+    10% { transform: rotateX(-20deg) rotateY(35deg) scale(1.1); filter: brightness(1.2); }
+    100% { transform: rotateX(-20deg) rotateY(35deg) scale(0.7) translateY(40px); filter: brightness(1.8); }
+}
+.gift-box.shake { animation: energyShake 0.1s infinite; }
+@keyframes energyShake {
+    0%, 100% { margin-left: 0; margin-top: 40px; }
+    25% { margin-left: -5px; margin-top: 38px; }
+    75% { margin-left: 5px; margin-top: 42px; }
 }
 
-.side {
+/* --- Thân Hộp --- */
+.box-body { position: absolute; width: 100%; height: 100%; transform-style: preserve-3d; }
+.box-body .side {
     position: absolute; width: 160px; height: 160px;
-    background: linear-gradient(135deg, var(--purple-light), var(--pink-soft));
-    border: 2px solid rgba(255,255,255,0.8);
+    background: linear-gradient(135deg, var(--purple-main), var(--pink-soft));
+    border: 2px solid rgba(255,255,255,0.6);
+    transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1); /* Tốc độ văng mảnh */
 }
-.box-front { transform: translateZ(80px); } 
-.box-back { transform: rotateY(180deg) translateZ(80px); }
-.box-left { transform: rotateY(-90deg) translateZ(80px); } 
-.box-right { transform: rotateY(90deg) translateZ(80px); }
+.box-front  { transform: translateZ(80px); }
+.box-back   { transform: rotateY(180deg) translateZ(80px); }
+.box-left   { transform: rotateY(-90deg) translateZ(80px); }
+.box-right  { transform: rotateY(90deg) translateZ(80px); }
 .box-bottom { transform: rotateX(-90deg) translateZ(80px); background: var(--purple-main); }
 
+/* --- Nắp Hộp (Đã sửa lỗi thủng nắp) --- */
 .box-lid {
     position: absolute; width: 170px; height: 40px; top: -40px; left: -5px;
-    transform-style: preserve-3d; transform-origin: bottom back; transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-style: preserve-3d; transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
 }
-.box-lid.open { transform: rotateX(110deg) translateY(-20px) translateZ(-20px); }
-.box-lid .side { background: linear-gradient(to right, var(--cyan), var(--blue-sky)); height: 40px; width: 170px; border-color: white;}
-.lid-top { height: 170px; transform: rotateX(90deg) translateZ(20px); background: #e0f2fe !important; }
-.lid-front { transform: translateZ(85px); } 
-.lid-back { transform: rotateY(180deg) translateZ(85px); }
-.lid-left { width: 170px; transform: rotateY(-90deg) translateZ(85px); } 
-.lid-right { width: 170px; transform: rotateY(90deg) translateZ(85px); }
+.box-lid .side { 
+    position: absolute; width: 170px; height: 40px; /* Định hình chiều cao viền nắp */
+    background: linear-gradient(to right, var(--cyan), var(--blue-sky)); 
+    border: 2px solid white; transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
+}
+.lid-front  { transform: translateZ(85px); }
+.lid-back   { transform: rotateY(180deg) translateZ(85px); }
+.lid-left   { transform: rotateY(-90deg) translateZ(85px); }
+.lid-right  { transform: rotateY(90deg) translateZ(85px); }
+/* Vá nắp - Ép vuông 170x170 */
+.lid-top { 
+    height: 170px !important; 
+    transform: rotateX(90deg) translateZ(20px); 
+    background: #e0f2fe !important; 
+}
 
-/* Ribbon */
-.ribbon-vertical, .ribbon-horizontal { position: absolute; background: var(--gold); box-shadow: 0 0 10px rgba(253, 224, 71, 0.8); }
-.ribbon-vertical { width: 24px; height: 170px; top: 0; left: 73px; transform: rotateX(90deg) translateZ(21px); }
-.ribbon-horizontal { width: 170px; height: 24px; top: 73px; left: 0; transform: rotateX(90deg) translateZ(21px); }
+/* Ruy băng & Nơ */
+.ribbon-vertical { position: absolute; width: 24px; height: 170px; background: var(--gold); top: 0; left: 73px; transform: rotateX(90deg) translateZ(21px); }
+.ribbon-horizontal { position: absolute; width: 170px; height: 24px; background: var(--gold); top: 73px; left: 0; transform: rotateX(90deg) translateZ(21px); }
 .bow {
-    position: absolute; width: 60px; height: 60px;
-    border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
+    position: absolute; width: 60px; height: 60px; border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
     transform: rotateX(90deg) translateZ(40px) rotateZ(45deg); top: 55px; left: 55px;
 }
 
+/* ================= HIỆU ỨNG NỔ VĂNG MẢNH KHI MỞ ================= */
+.gift-box.explode .box-front  { transform: translateZ(500px) rotateX(60deg) rotateY(60deg); opacity: 0; }
+.gift-box.explode .box-back   { transform: rotateY(180deg) translateZ(500px) rotateX(60deg); opacity: 0; }
+.gift-box.explode .box-left   { transform: rotateY(-90deg) translateZ(500px) rotateZ(60deg); opacity: 0; }
+.gift-box.explode .box-right  { transform: rotateY(90deg) translateZ(500px) rotateZ(-60deg); opacity: 0; }
+.gift-box.explode .box-bottom { transform: rotateX(-90deg) translateZ(500px); opacity: 0; }
+.gift-box.explode .box-lid    { transform: translateY(-400px) rotateX(120deg) rotateZ(180deg) scale(1.5); opacity: 0; }
 /* Typewriter Message */
 .message-text { font-size: 1.4rem; line-height: 1.8; min-height: 150px; white-space: pre-line; font-weight: 700; color: #4c1d95; }
 .cursor { display: inline-block; width: 4px; height: 1.2em; background-color: var(--pink-hot); animation: blink 0.7s infinite; vertical-align: text-bottom; }
