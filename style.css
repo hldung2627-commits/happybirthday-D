@@ -347,13 +347,13 @@ button {
 .box-right  { transform: rotateY(90deg) translateZ(80px); }
 .box-bottom { transform: rotateX(-90deg) translateZ(80px); background: var(--purple-main); }
 
-/* --- Nắp Hộp (Đã sửa lỗi thủng nắp) --- */
+/* --- Nắp Hộp (Đã vá kín và đậy đúng chiều) --- */
 .box-lid {
     position: absolute; width: 170px; height: 40px; top: -40px; left: -5px;
     transform-style: preserve-3d; transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
 }
 .box-lid .side { 
-    position: absolute; width: 170px; height: 40px; /* Định hình chiều cao viền nắp */
+    position: absolute; width: 170px; height: 40px; 
     background: linear-gradient(to right, var(--cyan), var(--blue-sky)); 
     border: 2px solid white; transition: all 0.8s cubic-bezier(0.1, 1, 0.2, 1);
 }
@@ -361,11 +361,22 @@ button {
 .lid-back   { transform: rotateY(180deg) translateZ(85px); }
 .lid-left   { transform: rotateY(-90deg) translateZ(85px); }
 .lid-right  { transform: rotateY(90deg) translateZ(85px); }
-/* Vá nắp - Ép vuông 170x170 */
+
+/* Kéo mặt trên cùng lên đúng đỉnh nắp */
 .lid-top { 
     height: 170px !important; 
+    top: -65px !important; /* Trọng tâm chuẩn */
     transform: rotateX(90deg) translateZ(20px); 
     background: #e0f2fe !important; 
+}
+
+/* Ruy băng & Nơ (Kéo lên khỏi mặt nắp 1px để không bị lún) */
+.ribbon-vertical { position: absolute; width: 24px; height: 170px; background: var(--gold); top: -65px; left: 73px; transform: rotateX(90deg) translateZ(21px); }
+.ribbon-horizontal { position: absolute; width: 170px; height: 24px; background: var(--gold); top: 8px; left: 0; transform: rotateX(90deg) translateZ(21px); }
+.bow {
+    position: absolute; width: 60px; height: 60px; border: 8px solid var(--gold); border-radius: 50% 50% 0 50%;
+    top: -10px; left: 55px; 
+    transform: rotateX(90deg) translateZ(30px) rotateZ(45deg); 
 }
 
 /* Ruy băng & Nơ */
