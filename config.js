@@ -11,25 +11,25 @@ const CONFIG = {
    memories: [
         { 
             year: "2023", 
-            images: ["9.jpg", "10.jpg", "11.jpg", "12.jpg"], 
+            images: ["20231.jpg", "20232.jpg", "20233.jpg", "20234.jpg", "20235.jpg", "20236.jpg", "20237.jpg", "20238.jpg"], 
             title: "Năm 2023", 
             description: "Cùng nhau trưởng thành, cùng nhau chia sẻ mọi khoảnh khắc vui buồn." 
         },
         { 
             year: "2024", 
-            images: ["13.jpg", "14.jpg", "15.jpg", "16.jpg"], 
+            images: ["20241.jpg", "20242.jpg", "20243.jpg", "20244.jpg", "20245.jpg", "20246.jpg", "20247.jpg", "20248.jpg"], 
             title: "Năm 2024", 
             description: "Bình yên đơn giản là những lúc được ở cạnh nhau thế này." 
         },
         { 
             year: "2025", 
-            images: ["17.jpg", "18.jpg", "19.jpg", "20.jpg"], 
+            images:["20251.jpg", "20252.jpg", "20253.jpg", "20254.jpg", "20255.jpg", "20256.jpg", "20257.jpg", "20258.jpg"], 
             title: "Năm 2025", 
             description: "Một năm thật nhiều tiếng cười và những cột mốc đáng tự hào." 
         },
         { 
             year: "2026", 
-            images: ["21.jpg", "22.jpg", "23.jpg", "24.jpg"], 
+            images: ["20261.jpg", "20262.jpg", "20263.jpg", "20264.jpg", "20265.jpg", "20266.jpg", "20267.jpg", "20268.jpg"], 
             title: "Năm 2026", 
             description: "Chúc mừng sinh nhật! Tuổi mới hãy luôn rực rỡ và hạnh phúc nhé 💜" 
         }
