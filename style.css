@@ -352,7 +352,7 @@ button {
     width: 170px; height: 170px; 
     top: -5px; left: -5px;       
     transform-style: preserve-3d; 
-    transform: translateY(0); /* SỬA Ở ĐÂY: Cho nắp đậy khít sát vào hộp */
+    transform: translateY(-80); /* SỬA Ở ĐÂY: Cho nắp đậy khít sát vào hộp */
     transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1); 
 }
 .box-lid .side { 
