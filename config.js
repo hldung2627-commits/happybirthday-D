@@ -59,7 +59,7 @@ const CONFIG = {
         "Chúc cậu tuổi mới...",
         "vẫn luôn vui vẻ và rạng rỡ như thế,",
         "vẫn luôn được yêu thương thật nhiều,",
-        "và luôn có tớ đồng hành trong những chặng đường sắp tới.",
+        "và trở thành người giáo viên vật lý 99 tuyệt vời s1tg.",
         "Happy Birthday! 💜"
     ],
 
