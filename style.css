@@ -421,12 +421,14 @@ button {
 .pointer-events-auto { pointer-events: auto !important; }
 
 /* Responsive Mobile */
-@media screen and (max-width: 768px) {
-    .glass-panel { padding: 1.5rem; }
-    
-    /* Tinh chỉnh cho điện thoại */
-    .timeline-item { flex: 0 0 260px; } /* Thu nhỏ ảnh 1 chút để vừa màn hình đt */
-    .section-title { font-size: 2.2rem; }
-    
-    .super-glow { font-size: 2.2rem; }
+/* TỐI ƯU KHOẢNG CÁCH CHO ĐIỆN THOẠI */
+@media screen and (max-width: 768px) { 
+    .timeline-container {
+        gap: 70px !important; /* Thu hẹp khoảng cách giữa các năm để ảnh dễ đan xen vào nhau */
+        padding-bottom: 80px !important;
+    }
+    .scattered-photo { 
+        width: 100px; /* Thu nhỏ ảnh một chút xíu trên mobile để không bị tràn màn hình */
+        height: 100px; 
+    } 
 }
