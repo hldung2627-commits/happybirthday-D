@@ -1,14 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     // 1. INIT CONFIG DATA
     document.getElementById('intro-text').innerText = CONFIG.introText;
-    document.getElementById('quiz-intro').innerText = CONFIG.quizText;
+    if(document.getElementById('quiz-intro')) document.getElementById('quiz-intro').innerText = CONFIG.quizText;
     document.getElementById('gift-text').innerText = CONFIG.giftText;
     document.getElementById('bday-name').innerText = CONFIG.name;
     document.getElementById('final-wall-text').innerText = CONFIG.finalWallText;
     document.getElementById('bg-music').src = CONFIG.music;
 
     let currentScene = 'scene-intro';
-    let currentQuizIndex = 0;
     
     // SCENE SWITCHER & BACKGROUND COLOR LOGIC
     function switchScene(nextSceneId, allowScroll = false) {
@@ -117,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         switchScene('scene-timeline', true);
     });
 
- // RENDER TIMELINE DỌC
+    // RENDER TIMELINE DỌC
     function renderTimeline() {
         const container = document.getElementById('timeline-container');
         container.innerHTML = '';
@@ -142,54 +141,44 @@ document.addEventListener("DOMContentLoaded", () => {
         const oldBtnContainer = document.querySelector('#scene-timeline .flex-center.mt-4');
         if (oldBtnContainer) oldBtnContainer.style.display = 'none';
         
-        const nextBtn = document.getElementById('to-quiz-btn');
-        nextBtn.classList.add('timeline-end-btn');
-        nextBtn.innerHTML = "TIẾP TỤC 💫";
-        container.appendChild(nextBtn);
+        // CẬP NHẬT: Trỏ đúng ID của nút chuyển sang Puzzle
+        const nextBtn = document.getElementById('to-puzzle-btn');
+        if (nextBtn) {
+            nextBtn.classList.add('timeline-end-btn');
+            nextBtn.innerHTML = "TIẾP TỤC 💫";
+            container.appendChild(nextBtn);
+        }
     }
 
-    // LOGIC TÍNH TOÁN BẮN ẢNH VÀ Ở LẠI MÀN HÌNH
-  // LOGIC BUNG ẢNH VÀ ẨN CHỮ (GIỮ LẠI ẢNH CŨ LẤP ĐẦY MÀN HÌNH)
+    // LOGIC BUNG ẢNH VÀ ẨN CHỮ (GIỮ LẠI ẢNH CŨ LẤP ĐẦY MÀN HÌNH)
     window.popPhoto = function(btnWrapper, index) {
         const item = btnWrapper.closest('.timeline-item');
         const photoContainer = item.querySelector('.scattered-photos-container');
         
-        // Đã xóa đoạn code tự động thu dọn các năm khác ở đây!
-
         const isOpen = item.classList.contains('is-open');
         
         if (isOpen) {
-            // Đang mở -> Bấm để ĐÓNG: Thu ảnh lại và hiện chữ
             photoContainer.innerHTML = '';
             item.classList.remove('is-open');
         } else {
-            // Đang đóng -> Bấm để MỞ: Bắn ảnh ra và ẩn chữ
             item.classList.add('is-open');
             
             const mem = CONFIG.memories[index];
             const imgsList = Array.isArray(mem.images) ? mem.images : (mem.image ? [mem.image] : []);
             
-           imgsList.forEach((src, i) => {
+            imgsList.forEach((src, i) => {
                 const img = document.createElement('img');
                 img.src = src; img.className = 'scattered-photo';
                 img.onerror = function() { this.style.display = 'none'; };
                 
                 // --- THUẬT TOÁN BẮN ẢNH TỎA TRÒN 360 ĐỘ ---
                 const total = imgsList.length;
-                
-                // Chia đều góc cho các ảnh (tính bằng radian) để chúng không bị xếp chồng lên nhau 1 cục
                 const baseAngle = (i / total) * (2 * Math.PI);
-                // Thêm một chút ngẫu nhiên để góc bay tự nhiên hơn
                 const finalAngle = baseAngle + (Math.random() - 0.5) * 1.5; 
-                
-                // Khoảng cách bay xa (bán kính): ngẫu nhiên từ 60px đến 150px
                 const radius = 60 + Math.random() * 90; 
                 
-                // Chuyển đổi hệ tọa độ cực (góc, bán kính) sang hệ tọa độ XY
                 const tx = Math.cos(finalAngle) * radius; 
                 const ty = Math.sin(finalAngle) * radius; 
-                
-                // Độ nghiêng ngẫu nhiên của từng bức ảnh
                 const rot = (Math.random() - 0.5) * 80;       
                 
                 img.style.setProperty('--tx', tx + 'px');
@@ -198,7 +187,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 photoContainer.appendChild(img);
             });
 
-            // Hiệu ứng kim tuyến
             if(typeof createSparkle === "function") {
                 for(let j=0; j<8; j++) {
                     createSparkle(btnWrapper.getBoundingClientRect().left + 40, btnWrapper.getBoundingClientRect().top + 20);
@@ -206,90 +194,125 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
-    // 6. TIMELINE -> QUIZ
-    document.getElementById('to-quiz-btn').addEventListener('click', () => {
-        renderQuiz(); switchScene('scene-quiz', false);
-    });
 
-    function renderQuiz() {
-        const qData = CONFIG.quiz[currentQuizIndex];
-        document.getElementById('quiz-question').innerText = qData.question;
-        const optionsContainer = document.getElementById('quiz-options');
-        optionsContainer.innerHTML = '';
-        
-        qData.options.forEach((opt, idx) => {
-            const btn = document.createElement('button'); btn.className = 'quiz-btn'; btn.innerText = opt;
-            btn.onclick = () => handleQuizAnswer(btn, idx, qData.answer);
-            optionsContainer.appendChild(btn);
+    // 6. TIMELINE -> PUZZLE
+    if (document.getElementById('to-puzzle-btn')) {
+        document.getElementById('to-puzzle-btn').addEventListener('click', () => {
+            switchScene('scene-puzzle', false);
         });
     }
 
-    function handleQuizAnswer(btn, selected, correct) {
-        if (selected === correct) {
-            btn.classList.add('correct');
-            for(let i=0; i<10; i++) createSparkle(btn.getBoundingClientRect().left + Math.random()*200, btn.getBoundingClientRect().top);
+    // 7. MYSTERY PUZZLE LOGIC (THAY THẾ QUIZ CŨ)
+    const cipherImg = document.getElementById('cipher-image');
+    const imgModal = document.getElementById('image-modal');
+    const zoomedImg = document.getElementById('zoomed-image');
+    const closeBtn = document.querySelector('.close-modal');
+
+    // Chức năng Zoom ảnh
+    if (cipherImg && imgModal && zoomedImg) {
+        cipherImg.addEventListener('click', () => {
+            imgModal.classList.add('show');
+            zoomedImg.src = cipherImg.src;
+        });
+        closeBtn.addEventListener('click', () => imgModal.classList.remove('show'));
+        imgModal.addEventListener('click', (e) => {
+            if (e.target === imgModal) imgModal.classList.remove('show');
+        });
+    }
+
+    // Chức năng kiểm tra Passcode 
+    const unlockBtn = document.getElementById('unlock-btn');
+    const passInput = document.getElementById('passcode-input');
+    const passMsg = document.getElementById('passcode-message');
+
+    function checkPasscode() {
+        const val = passInput.value.trim();
+        if (!val) return;
+
+        // Passcode bí mật: 3813
+        if (val === '3813') {
+            passInput.disabled = true;
+            unlockBtn.disabled = true;
+            passInput.style.borderColor = '#10b981';
             
-            setTimeout(() => {
-                currentQuizIndex++;
-                if (currentQuizIndex < CONFIG.quiz.length) renderQuiz();
-                else {
-                    document.getElementById('quiz-content').classList.add('hidden');
-                    document.getElementById('quiz-success').classList.remove('hidden');
+            passMsg.textContent = "✨ Chính xác! Cánh cửa bí mật đã mở...";
+            passMsg.className = 'msg-success';
+            
+            if(typeof createSparkle === "function") {
+                for(let i = 0; i < 30; i++) {
+                    createSparkle(window.innerWidth/2 + (Math.random()-0.5)*400, window.innerHeight/2 + (Math.random()-0.5)*400);
                 }
-            }, 1000);
+            }
+
+            // Chuyển qua Hộp Quà sau 1.5s
+            setTimeout(() => {
+                switchScene('scene-gift', false);
+            }, 1500);
+
         } else {
-            btn.classList.add('wrong'); setTimeout(() => btn.classList.remove('wrong'), 500);
+            passMsg.textContent = "Hmm... chưa đúng rồi. Hãy đọc lại những manh mối nhé 👀";
+            passMsg.className = 'msg-error';
+            
+            passInput.classList.remove('shake-input');
+            void passInput.offsetWidth; 
+            passInput.classList.add('shake-input');
+            passInput.value = ''; 
         }
     }
 
-    // 7. QUIZ -> GIFT
-    document.getElementById('to-gift-btn').addEventListener('click', () => switchScene('scene-gift', false));
+    if (unlockBtn && passInput) {
+        unlockBtn.addEventListener('click', checkPasscode);
+        passInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPasscode();
+        });
+    }
 
-    // 8. OPEN GIFT -> MESSAGE
-   // 8. HỘP QUÀ PHÁT NỔ (MAGIC EXPLOSION)
-    document.getElementById('open-gift-btn').addEventListener('click', function() {
-        this.style.display = 'none'; // Giấu nút đi
-        const box = document.getElementById('gift-box');
-        
-        // 1. Box tụ năng lượng và rung lắc bần bật
-        box.classList.add('energy-gather');
-        box.classList.add('shake');
-        
-        // 2. Chờ 1.5s rồi phát nổ
-        setTimeout(() => {
-            box.classList.remove('shake');
-            box.classList.add('explode'); // Văng các mảnh hộp ra
+    // 8. HỘP QUÀ PHÁT NỔ (MAGIC EXPLOSION)
+    if (document.getElementById('open-gift-btn')) {
+        document.getElementById('open-gift-btn').addEventListener('click', function() {
+            this.style.display = 'none'; // Giấu nút đi
+            const box = document.getElementById('gift-box');
             
-            // Tạo quả cầu ánh sáng chói lóa
-            const flash = document.createElement('div');
-            flash.style.cssText = "position:absolute; inset:0; background:radial-gradient(circle, #fff 0%, transparent 80%); opacity:0; z-index:100; transition: opacity 0.4s ease-out;";
-            document.body.appendChild(flash);
+            // 1. Box tụ năng lượng và rung lắc bần bật
+            box.classList.add('energy-gather');
+            box.classList.add('shake');
             
-            // Xả một lượng kim tuyến khổng lồ
-            if(typeof createSparkle === "function") {
-                for(let i = 0; i < 80; i++) {
-                    createSparkle(
-                        window.innerWidth/2 + (Math.random()-0.5)*500, 
-                        window.innerHeight/2 + (Math.random()-0.5)*500
-                    );
-                }
-            }
-            
-            // 3. Chuyển sáng rực màn hình rồi vô thiệp sinh nhật
+            // 2. Chờ 1.5s rồi phát nổ
             setTimeout(() => {
-                flash.style.opacity = '1'; // Sáng lóa
-                flash.style.background = '#ffffff'; // Phủ trắng toàn màn hình
+                box.classList.remove('shake');
+                box.classList.add('explode'); // Văng các mảnh hộp ra
                 
+                // Tạo quả cầu ánh sáng chói lóa
+                const flash = document.createElement('div');
+                flash.style.cssText = "position:absolute; inset:0; background:radial-gradient(circle, #fff 0%, transparent 80%); opacity:0; z-index:100; transition: opacity 0.4s ease-out;";
+                document.body.appendChild(flash);
+                
+                // Xả một lượng kim tuyến khổng lồ
+                if(typeof createSparkle === "function") {
+                    for(let i = 0; i < 80; i++) {
+                        createSparkle(
+                            window.innerWidth/2 + (Math.random()-0.5)*500, 
+                            window.innerHeight/2 + (Math.random()-0.5)*500
+                        );
+                    }
+                }
+                
+                // 3. Chuyển sáng rực màn hình rồi vô thiệp sinh nhật
                 setTimeout(() => {
-                    switchScene('scene-message', false); // Chuyển cảnh
-                    flash.style.opacity = '0'; // Giảm sáng từ từ
-                    setTimeout(() => flash.remove(), 1000);
-                    startTypewriter(); // Bắt đầu gõ chữ
-                }, 500);
-            }, 300); // Ánh sáng bùng lên sau 0.3s nổ
-            
-        }, 1500);
-    });
+                    flash.style.opacity = '1'; // Sáng lóa
+                    flash.style.background = '#ffffff'; // Phủ trắng toàn màn hình
+                    
+                    setTimeout(() => {
+                        switchScene('scene-message', false); // Chuyển cảnh
+                        flash.style.opacity = '0'; // Giảm sáng từ từ
+                        setTimeout(() => flash.remove(), 1000);
+                        startTypewriter(); // Bắt đầu gõ chữ
+                    }, 500);
+                }, 300); // Ánh sáng bùng lên sau 0.3s nổ
+                
+            }, 1500);
+        });
+    }
 
     // 9. TYPEWRITER
     async function startTypewriter() {
@@ -409,11 +432,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // 11. FIREWORKS -> FINAL WALL
-    document.getElementById('to-wall-btn').addEventListener('click', () => {
-        cancelAnimationFrame(fwInterval);
-        document.getElementById('fireworks-canvas').style.display = 'none';
-        renderWall(); switchScene('scene-wall', true);
-    });
+    if (document.getElementById('to-wall-btn')) {
+        document.getElementById('to-wall-btn').addEventListener('click', () => {
+            cancelAnimationFrame(fwInterval);
+            document.getElementById('fireworks-canvas').style.display = 'none';
+            renderWall(); switchScene('scene-wall', true);
+        });
+    }
 
     function renderWall() {
         const grid = document.getElementById('masonry-grid');
@@ -431,5 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // REPLAY
-    document.getElementById('replay-btn').addEventListener('click', () => location.reload());
+    if (document.getElementById('replay-btn')) {
+        document.getElementById('replay-btn').addEventListener('click', () => location.reload());
+    }
 });
