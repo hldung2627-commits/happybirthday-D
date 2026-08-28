@@ -517,3 +517,62 @@ button {
     .puzzle-header h2 { font-size: 1.8rem; }
     #passcode-input, #unlock-btn { width: 100%; max-width: 280px; }
 }
+/* =========================================================
+   FIX LỖI 1: TIMELINE BỊ CHỒNG LÊN NHAU TRÊN MOBILE
+========================================================= */
+
+/* Trả lại không gian vật lý cho thẻ text, không cho nó bay lơ lửng (absolute) nữa */
+.memory-text-card {
+    position: relative !important; 
+    top: auto !important; 
+    left: auto !important; 
+    transform: scale(1) !important;
+    margin-top: 15px !important; /* Khoảng thở giữa nút năm và nội dung */
+    margin-bottom: 20px !important;
+    width: 90% !important; 
+    max-width: 320px !important;
+}
+
+/* Khi bấm mở ảnh, thẻ chữ mờ đi nhưng KHÔNG mất chiều cao, để giữ chỗ cho ảnh bay ra */
+.timeline-item.is-open .memory-text-card {
+    transform: scale(0.9) !important; 
+    opacity: 0 !important; 
+    visibility: hidden !important; 
+    pointer-events: none !important; 
+}
+
+/* Đảm bảo khung bọc ngoài có khoảng cách đẹp trên điện thoại */
+@media screen and (max-width: 768px) { 
+    .timeline-container {
+        gap: 20px !important; /* Thẻ text đã chiếm chỗ nên chỉ cần gap nhỏ lại */
+        padding-bottom: 120px !important;
+    }
+}
+
+/* =========================================================
+   FIX LỖI 2: KHÔNG SCROLL/SWIPE ĐƯỢC Ở MYSTERY PUZZLE TRÊN IPHONE
+========================================================= */
+
+/* Ép buộc body và html phải cho phép thao tác vuốt dọc */
+html, body {
+    overflow-y: auto !important; 
+    touch-action: pan-y !important; /* Cho phép ngón tay vuốt lên xuống */
+}
+
+/* Mở khóa chiều cao 100vh đang giới hạn các scene */
+.scene, .scene.active {
+    height: auto !important; 
+    min-height: 100vh !important; 
+    overflow-y: auto !important; /* Bật thanh cuộn */
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important; /* Lệnh "thần thánh" giúp iPhone cuộn siêu mượt */
+    padding-bottom: 60px !important; /* Tránh bị che bởi thanh swipe bar của iPhone */
+}
+
+/* Tránh các class bọc nội dung story chặn cuộn */
+.puzzle-container, .story-container, #scene-quiz, #scene-puzzle {
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    touch-action: pan-y !important;
+}
