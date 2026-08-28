@@ -4,23 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Birthday! 🎈</title>
-    <!-- Mới: Font Fredoka (Vui tươi, heading) & Quicksand (Mềm mại, body) -->
+    <!-- Font Fredoka (Vui tươi, heading) & Quicksand (Mềm mại, body) -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=2026_final">
 
-<style>
-    /* Ép buộc sửa lỗi chặn click và con trỏ chuột (+) */
-    #fireworks-canvas {
-        pointer-events: none !important;
-        cursor: default !important;
-        z-index: 1 !important;
-    }
-    body[data-scene="scene-fireworks"] #fireworks-canvas {
-        pointer-events: auto !important;
-        cursor: crosshair !important;
-        z-index: 5 !important;
-    }
-</style>
+    <style>
+        /* Sửa lỗi chặn click và con trỏ chuột (+) */
+        #fireworks-canvas {
+            pointer-events: none !important;
+            cursor: default !important;
+            z-index: 1 !important;
+        }
+        body[data-scene="scene-fireworks"] #fireworks-canvas {
+            pointer-events: auto !important;
+            cursor: crosshair !important;
+            z-index: 5 !important;
+        }
+    </style>
 </head>
 <body data-scene="scene-intro">
     
@@ -66,7 +66,7 @@
             </div>
         </section>
 
-       <!-- SCENE 3: MYSTERY PUZZLE (Mới) -->
+        <!-- SCENE 3: MYSTERY PUZZLE -->
         <section id="scene-puzzle" class="scene">
             <div class="puzzle-container glass-card">
                 <div class="puzzle-header">
@@ -93,7 +93,6 @@
                     <p class="hint-subtext">Mỗi tư thế đều đang nói cho bạn một điều.</p>
                     
                     <div class="puzzle-image-wrapper">
-                        <!-- Tên file ảnh mật mã bạn cung cấp -->
                         <img src="image_a60163.png" alt="Bảng mật mã bí ẩn" id="cipher-image">
                         <div class="zoom-icon">🔍 Click để phóng to</div>
                     </div>
@@ -112,7 +111,7 @@
             </div>
         </section>
 
-        <!-- Modal Phóng to ảnh (Để ngay dưới Scene 3) -->
+        <!-- Modal Phóng to ảnh -->
         <div id="image-modal" class="modal-hidden">
             <span class="close-modal">&times;</span>
             <img class="modal-content" id="zoomed-image">
@@ -123,7 +122,7 @@
             <div class="gift-wrapper">
                 <p id="gift-text" class="heading-font mb-4 text-gradient glow-intense text-center"></p>
                 
-                <!-- 3D CSS Gift Box (Bright Version) -->
+                <!-- 3D CSS Gift Box -->
                 <div class="gift-box" id="gift-box">
                     <div class="box-body">
                         <div class="box-front side"></div>
@@ -156,22 +155,10 @@
             </div>
         </section>
 
-        <!-- SCENE 6: FIREWORKS -->
+        <!-- SCENE 6: FIREWORKS (KẾT THÚC VỚI NÚT PLAY AGAIN) -->
         <section id="scene-fireworks" class="scene flex-center pointer-events-none">
-            <!-- Canvas is behind, but captures clicks because scene is pointer-events-none, EXCEPT the button -->
             <h1 class="heading-font super-glow text-gradient text-center fade-in scale-in" style="z-index: 10;">HAPPY BIRTHDAY 🎉</h1>
-            <button id="to-wall-btn" class="primary-btn mt-4 pointer-events-auto bounce-hover" style="position:absolute; bottom: 15%; z-index: 20;">ONE MORE SURPRISE 🎀</button>
-        </section>
-
-        <!-- SCENE 7: MEMORY WALL -->
-        <section id="scene-wall" class="scene">
-            <div class="wall-container">
-                <h2 id="final-wall-text" class="heading-font text-center text-gradient glow-intense mb-4 mt-4"></h2>
-                <div id="masonry-grid" class="masonry-grid"></div>
-                <div class="flex-center mt-4 pb-4">
-                    <button id="replay-btn" class="primary-btn bounce-hover">PLAY AGAIN 🔄</button>
-                </div>
-            </div>
+            <button id="to-wall-btn" class="primary-btn mt-4 pointer-events-auto bounce-hover" style="position:absolute; bottom: 12%; z-index: 20;">PLAY AGAIN 🔄</button>
         </section>
 
     </main>
