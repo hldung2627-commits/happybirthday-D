@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if(document.getElementById('quiz-intro')) document.getElementById('quiz-intro').innerText = CONFIG.quizText;
     document.getElementById('gift-text').innerText = CONFIG.giftText;
     document.getElementById('bday-name').innerText = CONFIG.name;
-    document.getElementById('final-wall-text').innerText = CONFIG.finalWallText;
     document.getElementById('bg-music').src = CONFIG.music;
 
     let currentScene = 'scene-intro';
@@ -82,10 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function drawBg() {
         ctxBg.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        if(currentScene === 'scene-fireworks') return requestAnimationFrame(drawBg); // Hide stars during fireworks
+        if(currentScene === 'scene-fireworks') return requestAnimationFrame(drawBg);
         
         stars.forEach(star => {
-            ctxBg.fillStyle = `rgba(255, 255, 255, ${star.alpha * 0.5})`; // Very soft
+            ctxBg.fillStyle = `rgba(255, 255, 255, ${star.alpha * 0.5})`;
             ctxBg.beginPath(); ctxBg.arc(star.x, star.y, star.r, 0, Math.PI * 2); ctxBg.fill();
             star.y -= star.velocity; 
             if(star.y < 0) star.y = bgCanvas.height;
@@ -109,7 +108,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById('start-btn').addEventListener('click', () => {
         if (!isPlaying) musicBtn.click();
         
-        // Burst of sparkles
         for(let i=0; i<30; i++) createSparkle(window.innerWidth/2 + (Math.random()-0.5)*200, window.innerHeight/2 + (Math.random()-0.5)*200);
 
         renderTimeline();
@@ -137,11 +135,9 @@ document.addEventListener("DOMContentLoaded", () => {
             container.appendChild(el);
         });
 
-        // Chuyển nút tiếp tục xuống cuối
         const oldBtnContainer = document.querySelector('#scene-timeline .flex-center.mt-4');
         if (oldBtnContainer) oldBtnContainer.style.display = 'none';
         
-        // CẬP NHẬT: Trỏ đúng ID của nút chuyển sang Puzzle
         const nextBtn = document.getElementById('to-puzzle-btn');
         if (nextBtn) {
             nextBtn.classList.add('timeline-end-btn');
@@ -150,11 +146,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // LOGIC BUNG ẢNH VÀ ẨN CHỮ (GIỮ LẠI ẢNH CŨ LẤP ĐẦY MÀN HÌNH)
+    // LOGIC BUNG ẢNH VÀ ẨN CHỮ
     window.popPhoto = function(btnWrapper, index) {
         const item = btnWrapper.closest('.timeline-item');
         const photoContainer = item.querySelector('.scattered-photos-container');
-        
         const isOpen = item.classList.contains('is-open');
         
         if (isOpen) {
@@ -171,7 +166,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 img.src = src; img.className = 'scattered-photo';
                 img.onerror = function() { this.style.display = 'none'; };
                 
-                // --- THUẬT TOÁN BẮN ẢNH TỎA TRÒN 360 ĐỘ ---
                 const total = imgsList.length;
                 const baseAngle = (i / total) * (2 * Math.PI);
                 const finalAngle = baseAngle + (Math.random() - 0.5) * 1.5; 
@@ -193,7 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         }
-    }
+    };
 
     // 6. TIMELINE -> PUZZLE
     if (document.getElementById('to-puzzle-btn')) {
@@ -202,25 +196,26 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 7. MYSTERY PUZZLE LOGIC (THAY THẾ QUIZ CŨ)
+    // 7. MYSTERY PUZZLE LOGIC
     const cipherImg = document.getElementById('cipher-image');
     const imgModal = document.getElementById('image-modal');
     const zoomedImg = document.getElementById('zoomed-image');
     const closeBtn = document.querySelector('.close-modal');
 
-    // Chức năng Zoom ảnh
     if (cipherImg && imgModal && zoomedImg) {
         cipherImg.addEventListener('click', () => {
             imgModal.classList.add('show');
             zoomedImg.src = cipherImg.src;
         });
-        closeBtn.addEventListener('click', () => imgModal.classList.remove('show'));
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => imgModal.classList.remove('show'));
+        }
         imgModal.addEventListener('click', (e) => {
             if (e.target === imgModal) imgModal.classList.remove('show');
         });
     }
 
-    // Chức năng kiểm tra Passcode 
+    // Passcode Validation
     const unlockBtn = document.getElementById('unlock-btn');
     const passInput = document.getElementById('passcode-input');
     const passMsg = document.getElementById('passcode-message');
@@ -229,7 +224,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const val = passInput.value.trim();
         if (!val) return;
 
-        // Passcode bí mật: 3813
         if (val === '3813') {
             passInput.disabled = true;
             unlockBtn.disabled = true;
@@ -244,7 +238,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
 
-            // Chuyển qua Hộp Quà sau 1.5s
             setTimeout(() => {
                 switchScene('scene-gift', false);
             }, 1500);
@@ -267,54 +260,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 8. HỘP QUÀ PHÁT NỔ (MAGIC EXPLOSION)
-    if (document.getElementById('open-gift-btn')) {
-        document.getElementById('open-gift-btn').addEventListener('click', function() {
-            this.style.display = 'none'; // Giấu nút đi
-            const box = document.getElementById('gift-box');
+    // 8. MỞ HỘP QUÀ & CHUYỂN CẢNH
+    const openGiftBtn = document.getElementById('open-gift-btn');
+    if (openGiftBtn) {
+        openGiftBtn.addEventListener('click', function() {
+            this.style.display = 'none';
+            const box = document.querySelector('.gift-box');
             
-            // 1. Box tụ năng lượng và rung lắc bần bật
-            box.classList.add('energy-gather');
-            box.classList.add('shake');
+            if (box) {
+                box.classList.add('opened');
+            }
             
-            // 2. Chờ 1.5s rồi phát nổ
+            if(typeof createSparkle === "function") {
+                for(let i=0; i<40; i++) {
+                    createSparkle(window.innerWidth/2 + (Math.random()-0.5)*400, window.innerHeight/2 + (Math.random()-0.5)*400);
+                }
+            }
+
+            // Lóe sáng trắng và chuyển sang Scene Lời chúc
             setTimeout(() => {
-                box.classList.remove('shake');
-                box.classList.add('explode'); // Văng các mảnh hộp ra
-                
-                // Tạo quả cầu ánh sáng chói lóa
                 const flash = document.createElement('div');
-                flash.style.cssText = "position:absolute; inset:0; background:radial-gradient(circle, #fff 0%, transparent 80%); opacity:0; z-index:100; transition: opacity 0.4s ease-out;";
+                flash.style.cssText = "position:fixed; top:0; left:0; width:100vw; height:100vh; background:white; opacity:0; z-index:9999; transition: opacity 0.8s ease-in-out; pointer-events:none;";
                 document.body.appendChild(flash);
                 
-                // Xả một lượng kim tuyến khổng lồ
-                if(typeof createSparkle === "function") {
-                    for(let i = 0; i < 80; i++) {
-                        createSparkle(
-                            window.innerWidth/2 + (Math.random()-0.5)*500, 
-                            window.innerHeight/2 + (Math.random()-0.5)*500
-                        );
-                    }
-                }
+                setTimeout(() => { flash.style.opacity = '1'; }, 20);
                 
-                // 3. Chuyển sáng rực màn hình rồi vô thiệp sinh nhật
                 setTimeout(() => {
-                    flash.style.opacity = '1'; // Sáng lóa
-                    flash.style.background = '#ffffff'; // Phủ trắng toàn màn hình
-                    
-                    setTimeout(() => {
-                        switchScene('scene-message', false); // Chuyển cảnh
-                        flash.style.opacity = '0'; // Giảm sáng từ từ
-                        setTimeout(() => flash.remove(), 1000);
-                        startTypewriter(); // Bắt đầu gõ chữ
-                    }, 500);
-                }, 300); // Ánh sáng bùng lên sau 0.3s nổ
+                    switchScene('scene-message', false);
+                    flash.style.opacity = '0';
+                    setTimeout(() => flash.remove(), 800);
+                    startTypewriter();
+                }, 1000);
                 
-            }, 1500);
+            }, 800);
         });
     }
 
-    // 9. TYPEWRITER
+    // 9. TYPEWRITER EFFECT
     async function startTypewriter() {
         const container = document.getElementById('typewriter-text');
         container.innerHTML = '';
@@ -326,10 +308,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const text = CONFIG.birthdayMessage[i];
             for (let j = 0; j < text.length; j++) {
                 line.innerHTML = text.substring(0, j + 1) + '<span class="cursor"></span>';
-                await new Promise(r => setTimeout(r, 60)); // typing speed
+                await new Promise(r => setTimeout(r, 60));
             }
             line.innerHTML = text; 
-            await new Promise(r => setTimeout(r, 600)); // delay line
+            await new Promise(r => setTimeout(r, 600));
         }
         
         setTimeout(() => {
@@ -340,6 +322,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 10. COLORFUL FIREWORKS SYSTEM
     let fwInterval;
+    let autoFw;
+
     function startFireworks() {
         const fwCanvas = document.getElementById('fireworks-canvas');
         const ctxFw = fwCanvas.getContext('2d');
@@ -348,13 +332,11 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('resize', resizeFw); resizeFw();
         
         let particles = [];
-        
-        // Pháo hoa sinh nhật có nhiều bảng màu tươi sáng
         const palettes = [
-            ['#A855F7', '#EC4899', '#FFFFFF'], // Purple, Pink, White
-            ['#22D3EE', '#38BDF8', '#FFFFFF'], // Cyan, Blue, White
-            ['#FDE047', '#EC4899', '#D8B4FE'], // Gold, Pink, Lavender
-            ['#10B981', '#38BDF8', '#FDE047']  // Emerald, Blue, Gold
+            ['#A855F7', '#EC4899', '#FFFFFF'],
+            ['#22D3EE', '#38BDF8', '#FFFFFF'],
+            ['#FDE047', '#EC4899', '#D8B4FE'],
+            ['#10B981', '#38BDF8', '#FDE047']
         ];
 
         function createExplosion(x, y, isBig = false) {
@@ -377,7 +359,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         function animateFw() {
-            // Hiệu ứng Trail mờ dần thay vì xóa toàn bộ
             ctxFw.globalCompositeOperation = 'destination-out';
             ctxFw.fillStyle = 'rgba(0, 0, 0, 0.2)';
             ctxFw.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
@@ -386,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
             for(let i=0; i<particles.length; i++) {
                 let p = particles[i];
                 p.x += p.vx; p.y += p.vy;
-                p.vy += 0.05; // gravity nhẹ hơn
+                p.vy += 0.05;
                 p.alpha -= p.decay;
                 
                 ctxFw.globalAlpha = p.alpha;
@@ -401,62 +382,39 @@ document.addEventListener("DOMContentLoaded", () => {
             fwInterval = requestAnimationFrame(animateFw);
         }
         
-        // Bắt đầu animation
         animateFw();
         
-        // MASSIVE FINALE LÚC MỚI VÀO
         setTimeout(() => {
             createExplosion(fwCanvas.width/2, fwCanvas.height/3, true);
             setTimeout(() => createExplosion(fwCanvas.width/3, fwCanvas.height/4), 300);
             setTimeout(() => createExplosion(fwCanvas.width/1.5, fwCanvas.height/4), 600);
         }, 500);
         
-        // Random fireworks
-        const autoFw = setInterval(() => {
+        autoFw = setInterval(() => {
             if(currentScene === 'scene-fireworks' && Math.random() > 0.4) {
                 createExplosion(Math.random() * fwCanvas.width, Math.random() * fwCanvas.height * 0.5);
             }
         }, 1200);
 
-        // Click để bắn pháo hoa
         fwCanvas.addEventListener('click', (e) => {
             if(currentScene === 'scene-fireworks') {
                 createExplosion(e.clientX, e.clientY);
-                // Tạo thêm sparkle khi click
                 for(let i=0; i<5; i++) createSparkle(e.clientX, e.clientY);
             }
         });
-
-        // Xóa interval khi rời scene
-        document.getElementById('to-wall-btn').addEventListener('click', () => clearInterval(autoFw), {once: true});
     }
 
-    // 11. FIREWORKS -> FINAL WALL
-    if (document.getElementById('to-wall-btn')) {
-        document.getElementById('to-wall-btn').addEventListener('click', () => {
-            cancelAnimationFrame(fwInterval);
-            document.getElementById('fireworks-canvas').style.display = 'none';
-            renderWall(); switchScene('scene-wall', true);
+    // 11. XỬ LÝ NÚT PLAY AGAIN TẠI SCENE FIREWORKS
+    const playAgainBtn = document.getElementById('to-wall-btn');
+    if (playAgainBtn) {
+        playAgainBtn.addEventListener('click', () => {
+            if (autoFw) clearInterval(autoFw);
+            if (fwInterval) cancelAnimationFrame(fwInterval);
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => {
+                location.reload();
+            }, 350);
         });
-    }
-
-    function renderWall() {
-        const grid = document.getElementById('masonry-grid');
-        grid.innerHTML = '';
-        CONFIG.memories.forEach(mem => {
-            const rotation = (Math.random() - 0.5) * 15;
-            const el = document.createElement('div'); el.className = 'polaroid';
-            el.style.transform = `rotate(${rotation}deg)`;
-            el.innerHTML = `
-                <img src="${mem.image}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjIwMCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iI2U1ZTVlNSIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmaWxsPSIjOTk5IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5QaG90bzwvdGV4dD48L3N2Zz4='">
-                <p>${mem.year}</p>
-            `;
-            grid.appendChild(el);
-        });
-    }
-
-    // REPLAY
-    if (document.getElementById('replay-btn')) {
-        document.getElementById('replay-btn').addEventListener('click', () => location.reload());
     }
 });
