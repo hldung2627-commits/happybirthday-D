@@ -62,24 +62,61 @@
                 <!-- Sẽ được render bằng JS -->
             </div>
             <div class="flex-center mt-4 pb-4">
-                <button id="to-quiz-btn" class="primary-btn bounce-hover">TIẾP TỤC 💫</button>
+                <button id="to-puzzle-btn" class="primary-btn bounce-hover">TIẾP TỤC 💫</button>
             </div>
         </section>
 
-        <!-- SCENE 3: QUIZ -->
-        <section id="scene-quiz" class="scene flex-center">
-            <div class="quiz-container glass-panel">
-                <p id="quiz-intro" class="mb-4 text-center bold-text"></p>
-                <div id="quiz-content">
-                    <h3 id="quiz-question" class="heading-font text-gradient mb-4"></h3>
-                    <div id="quiz-options" class="options-grid"></div>
+       <!-- SCENE 3: MYSTERY PUZZLE (Mới) -->
+        <section id="scene-puzzle" class="scene">
+            <div class="puzzle-container glass-card">
+                <div class="puzzle-header">
+                    <h2>🔐 MYSTERY PUZZLE</h2>
+                    <p class="subtitle">Một câu chuyện tưởng như đã kết thúc... nhưng vẫn còn một bí mật.</p>
                 </div>
-                <div id="quiz-success" class="hidden text-center">
-                    <h3 class="heading-font text-gradient glow-intense">Tuyệt vời! Cậu vẫn nhớ 💜</h3>
-                    <button id="to-gift-btn" class="primary-btn mt-4 bounce-hover">NHẬN QUÀ 🎁</button>
+
+                <div class="puzzle-story">
+                    <p>Trong một ngôi nhà xa hoa ở Thượng Hải, có chàng trai tập Taekwondo <strong>đứng tấn vững quyền</strong> trong không gian tĩnh mịch, từng lượt thế chất dưới <strong>tay gập bụng</strong> làm mồ hôi anh ướt đẫm sàn. Cùng lúc đó ở một vùng quê hẻo lánh, một <strong>cô gái bị tật nguyên</strong> ngồi bên ô cửa sổ nhìn về nơi xa xăm nhớ về chàng trai. Đôi chân năm xưa vì cứu chàng mà giờ chân ngắn chân dài, nhưng cô chưa bao giờ hối hận về quyết định đó. Bởi chàng trai cũng rất yêu cô, và tháng sau họ sẽ đám cưới ở Sơn Động. Quả là một câu chuyện tình lãng mạn cho đến khi ...</p>
+                    
+                    <p class="time-skip">"1 tháng sau"</p>
+                    
+                    <p>Giữa đêm tân hôn hoa nến chưa tàn, hai người đứng ngoài ban công lâu đài trò chuyện. Bỗng chàng trai quay mặt rồi nói: “Anh xin lỗi, nhưng anh còn cả tương lai phía trước”. Cô gái còn chưa kịp hiểu ý nghĩa của câu nói ấy, thì một cánh tay đã đẩy cô xuống. Thì ra mọi thứ chỉ là lừa dối, chỉ đáng tiếc đã quá muộn màng, <strong>hai cánh tay hướng về người mình từng rất yêu</strong> với hi vọng níu kéo. Mọi ký ức khi xưa ùa về, từ cảnh <strong>chàng trai quỳ gối cầu hôn</strong> trên cánh đồng thảo nguyên, hay cả tương lai về <strong>ngôi nhà và những đứa trẻ</strong> đều đã tan biến.</p>
+                    
+                    <div class="poem-wrapper">
+                        <p class="poem">Bàn tay buông lơi,<br>Bóng hình chìm dần vào bóng tối sâu thẳm,<br>Và câu chuyện khép lại nơi đáy vực câm lặng.</p>
+                    </div>
+                    
+                    <p class="ps">P/s: Mọi sự vật chỉ là hư cấu và không được đánh giá người viết câu chuyện.</p>
+                </div>
+
+                <div class="puzzle-hint-section">
+                    <p class="hint-text">Hãy để ý thật kỹ những chi tiết được nhấn mạnh trong câu chuyện...</p>
+                    <p class="hint-subtext">Mỗi tư thế đều đang nói cho bạn một điều.</p>
+                    
+                    <div class="puzzle-image-wrapper">
+                        <!-- Tên file ảnh mật mã bạn cung cấp -->
+                        <img src="image_a60163.png" alt="Bảng mật mã bí ẩn" id="cipher-image">
+                        <div class="zoom-icon">🔍 Click để phóng to</div>
+                    </div>
+                </div>
+
+                <div class="passcode-section">
+                    <h3>🔑 NHẬP PASSCODE ĐỂ MỞ QUÀ</h3>
+                    <p>Bạn đã tìm ra chìa khóa chưa?</p>
+                    
+                    <div class="input-group">
+                        <input type="text" id="passcode-input" placeholder="Nhập passcode..." autocomplete="off">
+                        <button id="unlock-btn" class="primary-btn">MỞ KHÓA 🎁</button>
+                    </div>
+                    <p id="passcode-message"></p>
                 </div>
             </div>
         </section>
+
+        <!-- Modal Phóng to ảnh (Để ngay dưới Scene 3) -->
+        <div id="image-modal" class="modal-hidden">
+            <span class="close-modal">&times;</span>
+            <img class="modal-content" id="zoomed-image">
+        </div>
 
         <!-- SCENE 4: GIFT BOX -->
         <section id="scene-gift" class="scene flex-center">
