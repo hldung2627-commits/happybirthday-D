@@ -169,17 +169,28 @@ document.addEventListener("DOMContentLoaded", () => {
             const mem = CONFIG.memories[index];
             const imgsList = Array.isArray(mem.images) ? mem.images : (mem.image ? [mem.image] : []);
             
-            imgsList.forEach((src, i) => {
+           imgsList.forEach((src, i) => {
                 const img = document.createElement('img');
                 img.src = src; img.className = 'scattered-photo';
                 img.onerror = function() { this.style.display = 'none'; };
                 
-                // Thuật toán rải ảnh (bay xa và rộng hơn một chút để lấp đầy màn hình)
-                const isLeft = i % 2 === 0;
-                const signX = isLeft ? -1 : 1;
-                const tx = signX * (100 + Math.random() * 80); 
-                const ty = (Math.random() - 0.5) * 260; 
-                const rot = (Math.random() - 0.5) * 70;       
+                // --- THUẬT TOÁN BẮN ẢNH TỎA TRÒN 360 ĐỘ ---
+                const total = imgsList.length;
+                
+                // Chia đều góc cho các ảnh (tính bằng radian) để chúng không bị xếp chồng lên nhau 1 cục
+                const baseAngle = (i / total) * (2 * Math.PI);
+                // Thêm một chút ngẫu nhiên để góc bay tự nhiên hơn
+                const finalAngle = baseAngle + (Math.random() - 0.5) * 1.5; 
+                
+                // Khoảng cách bay xa (bán kính): ngẫu nhiên từ 60px đến 150px
+                const radius = 60 + Math.random() * 90; 
+                
+                // Chuyển đổi hệ tọa độ cực (góc, bán kính) sang hệ tọa độ XY
+                const tx = Math.cos(finalAngle) * radius; 
+                const ty = Math.sin(finalAngle) * radius; 
+                
+                // Độ nghiêng ngẫu nhiên của từng bức ảnh
+                const rot = (Math.random() - 0.5) * 80;       
                 
                 img.style.setProperty('--tx', tx + 'px');
                 img.style.setProperty('--ty', ty + 'px');
