@@ -432,3 +432,88 @@ button {
         height: 100px; 
     } 
 }
+/* ================= MYSTERY PUZZLE SCENE ================= */
+#scene-puzzle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 20px;
+    position: relative;
+    overflow-y: auto;
+}
+
+.puzzle-container {
+    max-width: 800px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 2px solid white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 15px 35px rgba(168, 85, 247, 0.2);
+    margin-top: 40px;
+}
+
+.puzzle-header h2 { text-align: center; font-size: 2.2rem; color: var(--purple-main); margin-bottom: 8px;}
+.puzzle-header .subtitle { text-align: center; color: #7e22ce; font-style: italic; margin-bottom: 35px; font-size: 1.1rem;}
+
+.puzzle-story { font-size: 1.1rem; line-height: 1.8; color: #4b5563; margin-bottom: 40px; }
+.puzzle-story p { margin-bottom: 18px; text-align: justify; }
+.puzzle-story strong { 
+    color: var(--pink-hot); 
+    font-weight: 700; 
+    background: rgba(236, 72, 153, 0.1);
+    padding: 0 4px;
+    border-radius: 4px;
+}
+
+.time-skip { text-align: center !important; font-weight: bold; color: var(--purple-main); margin: 30px 0 !important; font-size: 1.2rem; letter-spacing: 2px;}
+.poem-wrapper { display: flex; justify-content: center; margin: 25px 0; }
+.poem { text-align: left !important; font-style: italic; color: #6b7280; border-left: 3px solid var(--purple-main); padding-left: 20px; }
+.ps { font-size: 0.9rem; color: #9ca3af; margin-top: 25px; text-align: right !important;}
+
+/* Hint & Image */
+.puzzle-hint-section { text-align: center; background: rgba(255,255,255,0.5); padding: 30px; border-radius: 16px; border: 1px dashed var(--purple-light); margin-bottom: 40px; }
+.hint-text { font-size: 1.15rem; color: var(--purple-main); font-weight: bold; margin-bottom: 5px; }
+.hint-subtext { color: #6b7280; font-style: italic; font-size: 1rem; }
+
+.puzzle-image-wrapper { position: relative; display: inline-block; cursor: zoom-in; transition: transform 0.3s ease; margin-top: 20px; }
+.puzzle-image-wrapper:hover { transform: scale(1.02); }
+.puzzle-image-wrapper img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);}
+.zoom-icon { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 6px 18px; border-radius: 20px; font-size: 0.9rem; pointer-events: none;}
+
+/* Passcode Input */
+.passcode-section { text-align: center; border-top: 1px solid rgba(168, 85, 247, 0.2); padding-top: 35px; }
+.passcode-section h3 { color: var(--pink-hot); font-size: 1.4rem; margin-bottom: 5px; }
+.passcode-section p { color: #6b7280; margin-bottom: 20px;}
+
+.input-group { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+#passcode-input { 
+    padding: 12px 20px; font-size: 1.2rem; border-radius: 12px; 
+    border: 2px solid var(--purple-light); background: white; 
+    color: var(--purple-main); text-align: center; letter-spacing: 4px; width: 220px; 
+    outline: none; transition: all 0.3s; font-weight: bold;
+}
+#passcode-input:focus { border-color: var(--pink-hot); box-shadow: 0 0 15px rgba(236, 72, 153, 0.2); }
+
+#passcode-message { margin-top: 15px; min-height: 24px; font-size: 1.05rem; font-weight: 600; transition: 0.3s; }
+.msg-error { color: #ef4444; animation: fadeIn 0.3s; }
+.msg-success { color: #10b981; animation: fadeIn 0.3s; }
+
+/* Image Zoom Modal */
+#image-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 99999; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
+#image-modal.show { opacity: 1; pointer-events: auto; }
+.modal-content { max-width: 95%; max-height: 90vh; border-radius: 8px; transform: scale(0.9); transition: transform 0.3s ease; background: #fff; padding: 10px;}
+#image-modal.show .modal-content { transform: scale(1); }
+.close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 45px; cursor: pointer; text-shadow: 0 0 10px rgba(0,0,0,0.5);}
+
+.shake-input { animation: errorShake 0.4s cubic-bezier(.36,.07,.19,.97) both; border-color: #ef4444 !important; }
+@keyframes errorShake { 10%, 90% { transform: translate3d(-2px, 0, 0); } 20%, 80% { transform: translate3d(4px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-6px, 0, 0); } 40%, 60% { transform: translate3d(6px, 0, 0); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+@media screen and (max-width: 768px) {
+    .puzzle-container { padding: 30px 20px; }
+    .puzzle-header h2 { font-size: 1.8rem; }
+    #passcode-input, #unlock-btn { width: 100%; max-width: 280px; }
+}
