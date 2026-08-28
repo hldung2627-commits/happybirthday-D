@@ -1,6 +1,6 @@
 const CONFIG = {
     // Thông tin chung
-    name: "Tên Của Bạn",
+    name: "Lê Vi",
     music: "birthday.mp3",
     
     // Scene 1: Intro
